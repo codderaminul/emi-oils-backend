@@ -1,0 +1,623 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Send Email{% endblock title %}
+{% block body %}
+{% include 'include/header.html' %}
+
+<style>
+    .audience-submenu{
+        background: #fff;
+        border-bottom: 1px solid lightgray;
+    }
+    .audience-subheader ul{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        padding: 15px 0;
+        margin: 0;
+    }
+    .audience-subheader ul li a{
+        color: #00455e;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 20px;
+    }
+    .submenu-active{
+        border-bottom: 2px solid #00455e;
+    }
+
+    .audience-subheader ul li a:hover{
+        border-bottom: 2px solid #00455e;
+    }
+    .all-contacts-page-header h2{
+        font-size: 45px;
+        font-weight: 600;
+    }
+    .all-contacts-page-header h4{
+        font-size: 25px;
+        font-weight: 500;
+    }
+    .all-contacts-page-header p{
+        font-size: 18px;
+        font-weight: 400;
+    }
+    .all-contacts-page-header p span{
+        color: #00455e;
+        font-weight: 600;
+    }
+
+    .filter-audiencs p{
+        margin-bottom: 10px;
+    }
+    .filter-audiencs p input, .filter-audiencs p select{
+        width: 100%;
+        border: 1px solid lightgray;
+        border-radius: 5px;
+        padding: 5px 10px;
+    }
+    .filter-audiencs p input:focus, .filter-audiencs p select:focus{
+        outline: none;
+    }
+    .filter-audiencs .audiencs-filter-btn{
+        background: #10779d;
+        border: none;
+        color: #fff;
+        padding: 5px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .create-audiencs-category input{
+        border: 1px solid lightgray;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+    .create-audiencs-category input:focus{
+        outline: none;
+    }
+    .create-audiencs-category button{
+        border: 1px solid lightgray;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+    .scrollable-table-width{
+        width: 2500px;
+        overflow: scroll;
+    }
+    .scrollable-table-height{
+        overflow-y: scroll;
+        height: 500px;
+        margin-bottom: 50px;
+    }
+    .firstName-column, .lastName-column{
+        max-width: 100px;
+    }
+    .age-column{
+        max-width: 100px;
+    }
+    
+    .delete{
+        border: 1px solid red;
+        background: transparent;
+        color: red;
+        padding: 1px 5px;
+    }
+    .edit{
+        border: 1px solid #000;
+        background: transparent;
+        color: #000;
+        margin-left: 5px;
+        padding: 1px 5px;
+    }
+    .update{
+        border: 1px solid green;
+        background: transparent;
+        color: green;
+        margin-left: 5px;
+        padding: 1px 5px;
+        display: none;
+    }
+</style>
+
+<section class="audience-submenu">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="audience-subheader">
+                    <ul>
+                        <li><a href="#">Audience Deshboard</a></li>
+                        <li><a href="#" class="submenu-active">All contacts</a></li>
+                        <li><a href="#">Category</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- All Contact Page -->
+{% csrf_token %}
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="all-contacts-page-header py-4">
+                    <h2>Audience</h2>
+                    <label for="category">Category:</label>
+                    <select name="" id="" onchange="search_by_category(this.value)">
+                        <option id="select_all" value="select_all">All</option>
+                        {% for category in cc %}
+                            <option  value="{{category.id}}">{{category.name}}</option>
+                        {% endfor %}
+                    </select>
+                    <p>Your audience has <span>12</span> contact. <span>01</span> of these is subscribed.</p>
+                </div>
+
+                <div>
+                    <div class="d-flex align-items-end justify-content-between filter-audiencs">
+                        <form method="get">
+                            {{ filter.form.as_p }}
+                            <button type="submit" class="audiencs-filter-btn">Filter</button>
+                        </form>
+                    </div>
+    
+                    <div class="d-flex align-items-center gap-3 py-3">
+                        <div>
+                            <input type="checkbox" style="cursor: pointer;" id="all_dispatch" onchange="selectAll_all_dispatch()">
+                            <label for="all_dispatch" style="cursor: pointer;">Select all from dispatch</label>
+                        </div>
+                        <div class="d-block">
+                            <input type="checkbox" style="cursor: pointer;" id="all" onchange="selectAll()">
+                            <label for="all" style="cursor: pointer;">Select all of</label>
+                        </div>
+                        
+                        <div>
+                            <form action="" method="post" class="create-audiencs-category">
+                                {% csrf_token %}
+                                <input type="text" class="d-none" id="create-audiencs-category-input" name="create_category_name" placeholder="Input Category Name">
+                                <input type="hidden" id="create_category_subscriber_id_list" name="create_category_subscriber_id_list">
+                                <button type="button" id="audiencs-segment-create-btn-without-input">Create new Segment</button>
+                                <button class="d-none" id="audiencs-segment-create-btn-with-input">➕ Create new Segment</button>
+                                <button type="button" class="d-none" id="audiencs-segment-cancel-btn">Cancel</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive scrollable-table-height border">
+                        <table class="table table-selectable scrollable-table-width" id="myTable">
+                            <thead>
+                                <tr>
+                                    <th>Select</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Whatsapp</th>
+                                    <th>Company</th>
+                                    <th>Age</th>
+                                    <th>Gender</th>
+                                    <th>Country</th>
+                                    <th>Create Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for subscriber in subscribers %}
+                                <tr id="subscriber_{{ subscriber.id }}">
+                                    <th scope="row"><input type="checkbox" onchange="checkbox_load()" name="subscribers" value="{{subscriber.id}}" id="{{subscriber.id}}"></th>
+                                    <td class="firstName-column"><input type="text" class="form-control" name="first_name" value="{{subscriber.first_name}}" disabled></td>
+                                    <td class="lastName-column"><input type="text" class="form-control" name="last_name" value="{{subscriber.last_name}}" disabled></td>
+                                    <td><input type="text" class="form-control" name="email" value="{{subscriber.email}}" disabled></td>
+                                    <td><input type="text" class="form-control" name="phone" value="{{subscriber.phone}}" disabled></td>
+                                    <td><input type="text" class="form-control" name="whatsapp" value="{{subscriber.whatsapp}}" disabled></td>
+                                    <td><input type="text" class="form-control" name="company" value="{{subscriber.company}}" disabled>
+                                    </td>
+                                    <td class="age-column"><input type="text" class="form-control" name="age" value="{{subscriber.age}}" disabled></td>
+                                    <td>
+                                        <select name="gender" id="" class="form-select" disabled>
+                                            <option class="bg-primary">{{subscriber.gender}}</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
+                                    </td>
+                                    
+                                    <td><input type="text" class="form-control" name="country" value="{{subscriber.country}}" disabled></td>
+                                    <td>{{subscriber.10}}</td>
+                                    <td>
+                                        <button class="delete"><i class="fa-solid fa-trash"></i></button>
+                                        <button class="edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                                        <button class="update"><i class="fa-solid fa-check"></i></button>
+                                    </td>
+                                </tr>   
+                                {% endfor %}                                           
+                            </tbody>
+                        </table>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="container pagination mb-5">
+            <span class="step-links">
+                {% if subscribers.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ subscribers.previous_page_number }}">previous</a>
+                {% endif %}
+        
+                <span class="current">
+                    Page {{ subscribers.number }} of {{ subscribers.paginator.num_pages }}.
+                </span>
+        
+                {% if subscribers.has_next %}
+                    <a href="?page={{ subscribers.next_page_number }}">next</a>
+                    <a href="?page={{ subscribers.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+    </div>
+</section>
+
+<script>
+    function search_by_category(id) {
+        var CSRFToken = document.querySelector('input[name=csrfmiddlewaretoken]').value;
+        var formdata = new FormData();
+        formdata.append("csrfmiddlewaretoken", CSRFToken);
+        fetch("/get-category/" + id, {
+            method: "POST",
+            headers: new Headers(),
+            body: formdata,
+        })
+        .then((result) => { return result.json() })
+        .then((data) => { 
+            renderData(data.subscriber_list,data.companies); 
+        });
+    }
+    function renderData(subscriber_list,companies) {
+        const tableBody = document.querySelector('#myTable tbody');
+        tableBody.innerHTML = ''; // Clear the existing rows
+
+        subscriber_list.forEach(subscriber => {
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <th scope="row"><input type="checkbox" name="subscribers" onchange="checkbox_load()" value="${subscriber.id}" id="${subscriber.id}"></th>
+                <td><input type="text" class="form-control" name="first_name" value="${subscriber.first_name}" disabled></td>
+                <td><input type="text" class="form-control" name="last_name" value="${subscriber.last_name}" disabled></td>
+                <td><input type="text" class="form-control" name="email" value="${subscriber.email}" disabled></td>
+                <td><input type="text" class="form-control" name="phone" value="${subscriber.phone}" disabled></td>
+                <td><input type="text" class="form-control" name="whatsapp" value="${subscriber.whatsapp}" disabled></td>
+                <td>
+                    <select name="company" id="company" disabled>
+                        <option value="${subscriber.company.id}">${subscriber.company.name}</option>
+                        {% for company in companies %}
+                        <option value="{{ company.id }}">{{ company.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td><input type="text" class="form-control" name="age" value="${subscriber.age}" disabled></td>
+                <td>
+                    <select name="gender" id="" disabled>
+                        <option class="bg-primary">${subscriber.gender}</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </td>
+                <td><input type="text" class="form-control" name="country" value="${subscriber.country}" disabled></td>
+                <td><input type="text" class="form-control" name="formatted_date" value="${subscriber.created_at}" disabled></td>
+                <td>
+                    <button class="delete"><i class="fa-solid fa-trash"></i></button>
+                    <button class="edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                    <button class="update"><i class="fa-solid fa-check"></i></button>
+                </td>
+            `;
+            tableBody.appendChild(newRow);
+        });
+    }
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // When the dropdown changes, show or hide the date input
+        const dateFilter = document.getElementById("dateFilter");
+        const dateInput = document.getElementById("datepicker");
+        dateFilter.addEventListener('change', function () {
+            const selectedValue = dateFilter.value;
+
+            if (selectedValue === "before" || selectedValue === "after") {
+                dateInput.style.display = "block";
+            } else {
+                dateInput.style.display = "none";
+            }
+        });
+        // Add an event listener for the search input
+        const searchInput = document.getElementById("myInput");
+        searchInput.addEventListener("keyup", function () {
+            filterSubscribers();
+        });
+        dateFilter.addEventListener('change', function () {
+            filterSubscribers();
+        });
+
+        dateInput.addEventListener('change', function () {
+            filterSubscribers();
+        });
+        function filterSubscribers() {
+            const searchText = searchInput.value.toLowerCase();
+            const selectedDateFilter = dateFilter.value;
+            const dateValue = dateInput.value;
+            const tableRows = document.querySelectorAll('#myTable tbody tr');
+            tableRows.forEach(function (row) {
+                const emailInput = row.querySelector('input[name="email"]');
+                const createDateCell = row.querySelector('td:nth-child(11)');
+                const email = emailInput.value.toLowerCase();
+                const createDate = createDateCell.textContent;
+                const showRow = email.includes(searchText) && applyDateFilter(createDate, selectedDateFilter, dateValue);
+                row.style.display = showRow ? 'table-row' : 'none';
+            });
+        }
+        function applyDateFilter(dateString, filterType, filterValue) {
+            const createDate = new Date(dateString);
+            const filterDate = new Date(filterValue);
+            if (filterType === "before" && filterValue != '') {
+                return createDate <= filterDate;
+            } else if (filterType === "after" && filterValue != '') {
+                return createDate >= filterDate;
+            } else {
+                return true;  // Show all rows if no date filter is selected
+            }
+        }
+    });
+</script>
+
+<script>
+    function checkbox_load() {
+        var checkboxes = document.getElementsByName('subscribers');
+        var selectedIds = [];
+
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked) {
+                selectedIds.push(checkboxes[i].value);
+            }
+        }
+
+        document.getElementById('create_category_subscriber_id_list').value = selectedIds.join(',');
+    }
+
+    function selectAll() {
+        var checkboxes = document.getElementsByName('subscribers');
+        var selectAllCheckbox = document.getElementById('all');
+
+        for (var i = 0; i < checkboxes.length; i++) {
+            checkboxes[i].checked = selectAllCheckbox.checked;
+        }
+
+        checkbox_load(); // Call the checkbox_load function to update the hidden input
+    }
+</script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const editButtons = document.querySelectorAll('.edit');
+        editButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const row = button.closest('tr');
+                const inputs = row.querySelectorAll('input[type="text"] , select');
+                inputs.forEach(input => {
+                    input.disabled = !input.disabled;
+                });
+                button.style.display = 'none';
+                const updateButton = row.querySelector('.update');
+                if (updateButton) {
+                    updateButton.style.display = 'inline-block';
+                }
+            });
+        });
+       
+        const updateButtons = document.querySelectorAll('.update');
+        updateButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const row = button.closest('tr');
+                const inputs = row.querySelectorAll('input[type="text"],select');
+
+                var id = row.querySelector('input[name="subscribers"]');
+                var first_name = row.querySelector('input[name="first_name"]');
+                var last_name = row.querySelector('input[name="last_name"]');
+                var email = row.querySelector('input[name="email"]');
+                var phone = row.querySelector('input[name="phone"]');
+                var whatsapp = row.querySelector('input[name="whatsapp"]');
+                var country = row.querySelector('input[name="country"]');
+                var company = row.querySelector('select[name="company"]');
+                var gender = row.querySelector('select[name="gender"]');
+                var age = row.querySelector('input[name="age"]');
+                
+                var CSRFToken = document.querySelector('input[name=csrfmiddlewaretoken]').value;
+                var formdata = new FormData();
+                formdata.append("subscribe_id", id.value);
+                formdata.append("first_name", first_name.value);
+                formdata.append("last_name", last_name.value);
+                formdata.append("email", email.value);
+                formdata.append("phone", phone.value);
+                formdata.append("whatsapp", whatsapp.value);
+                formdata.append("country", country.value);
+                formdata.append("company", company.value);
+                formdata.append("gender", gender.value);
+                formdata.append("age", age.value);
+                formdata.append("csrfmiddlewaretoken", CSRFToken);
+                fetch("{% url 'tbm:subscribers' %}", {
+                    method: "POST",
+                    headers: new Headers(),
+                    body: formdata,
+                })
+                .then((result) => { return result.json() })
+                .then((data) => { 
+                });
+
+                inputs.forEach(input => {
+                    input.disabled = true;
+                });
+                button.style.display = 'none';
+
+                const editButton = row.querySelector('.edit');
+                if (editButton) {
+                    editButton.style.display = 'inline-block';
+                }
+            });
+        });
+
+        const deleteButtons = document.querySelectorAll('.delete');
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const confirmed = confirm("Are you sure delete?");
+                if(confirmed){
+                    const row = button.closest('tr');
+                    var id = row.querySelector('input[name="subscribers"]');
+                    var CSRFToken = document.querySelector('input[name=csrfmiddlewaretoken]').value;
+                    var formdata = new FormData();
+                    formdata.append("delete_subscribe_id", id.value);
+                    formdata.append("csrfmiddlewaretoken", CSRFToken);
+
+                    fetch("{% url 'tbm:subscribers' %}", {
+                        method: "POST",
+                        headers: new Headers(),
+                        body: formdata,
+                    })
+                    .then((result) => { return result.json() })
+                    .then((data) => { 
+                        row.classList.add('htmx-swapping');
+                        row.remove();
+                    
+                    });
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Event delegation for edit, update, and delete buttons
+        document.addEventListener('click', function (event) {
+            const target = event.target;
+
+            if (target.classList.contains('edit')) {
+                handleEditButtonClick(target);
+            } else if (target.classList.contains('update')) {
+                handleUpdateButtonClick(target);
+            } else if (target.classList.contains('delete')) {
+                handleDeleteButtonClick(target);
+            }
+        });
+
+        function handleEditButtonClick(button) {
+            const row = button.closest('tr');
+            const inputs = row.querySelectorAll('input[type="text"], select');
+            inputs.forEach(input => {
+                input.disabled = !input.disabled;
+            });
+            button.style.display = 'none';
+            const updateButton = row.querySelector('.update');
+            if (updateButton) {
+                updateButton.style.display = 'inline-block';
+            }
+        }
+
+        function handleUpdateButtonClick(button) {
+            const row = button.closest('tr');
+            const inputs = row.querySelectorAll('input[type="text"], select');
+
+            var id = row.querySelector('input[name="subscribers"]');
+            var first_name = row.querySelector('input[name="first_name"]');
+            var last_name = row.querySelector('input[name="last_name"]');
+            var email = row.querySelector('input[name="email"]');
+            var phone = row.querySelector('input[name="phone"]');
+            var whatsapp = row.querySelector('input[name="whatsapp"]');
+            var country = row.querySelector('input[name="country"]');
+            var company = row.querySelector('select[name="company"]');
+            var gender = row.querySelector('select[name="gender"]');
+            var age = row.querySelector('input[name="age"]');
+
+            var CSRFToken = document.querySelector('input[name=csrfmiddlewaretoken]').value;
+            var formdata = new FormData();
+            formdata.append("subscribe_id", id.value);
+            formdata.append("first_name", first_name.value);
+            formdata.append("last_name", last_name.value);
+            formdata.append("email", email.value);
+            formdata.append("phone", phone.value);
+            formdata.append("whatsapp", whatsapp.value);
+            formdata.append("country", country.value);
+            formdata.append("company", company.value);
+            formdata.append("gender", gender.value);
+            formdata.append("age", age.value);
+            formdata.append("csrfmiddlewaretoken", CSRFToken);
+
+            fetch("{% url 'tbm:subscribers' %}", {
+                method: "POST",
+                headers: new Headers(),
+                body: formdata,
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response data if needed
+            });
+
+            inputs.forEach(input => {
+                input.disabled = true;
+            });
+            button.style.display = 'none';
+
+            const editButton = row.querySelector('.edit');
+            if (editButton) {
+                editButton.style.display = 'inline-block';
+            }
+        }
+
+        function handleDeleteButtonClick(button) {
+            const confirmed = confirm("Are you sure delete?");
+            if (confirmed) {
+                const row = button.closest('tr');
+                var id = row.querySelector('input[name="subscribers"]');
+                var CSRFToken = document.querySelector('input[name=csrfmiddlewaretoken]').value;
+                var formdata = new FormData();
+                formdata.append("delete_subscribe_id", id.value);
+                formdata.append("csrfmiddlewaretoken", CSRFToken);
+
+                fetch("{% url 'tbm:subscribers' %}", {
+                    method: "POST",
+                    headers: new Headers(),
+                    body: formdata,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    row.classList.add('htmx-swapping');
+                    row.remove();
+                });
+            }
+        }
+    });
+
+    const segmentCreateOpenBtn = document.getElementById('audiencs-segment-create-btn-without-input');
+    const segmentCreateBtn = document.getElementById('audiencs-segment-create-btn-with-input');
+    const segmentCancelBtn = document.getElementById('audiencs-segment-cancel-btn');
+    const segmentCreateInput = document.getElementById('create-audiencs-category-input');
+
+    segmentCreateOpenBtn.addEventListener('click', ()=>{
+        segmentCreateInput.classList.remove('d-none');
+        segmentCancelBtn.classList.remove('d-none');
+        segmentCreateOpenBtn.classList.add('d-none');
+        segmentCreateBtn.classList.remove('d-none');
+    })
+
+    segmentCancelBtn.addEventListener('click', ()=>{
+        segmentCreateInput.classList.add('d-none');
+        segmentCreateBtn.classList.add('d-none');
+        segmentCreateOpenBtn.classList.remove('d-none');
+        segmentCancelBtn.classList.add('d-none');
+    })
+</script>
+{% endblock body %}
+
+
+
+
+

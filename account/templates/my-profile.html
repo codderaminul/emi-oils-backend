@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Profile{% endblock title %}
+
+{% block body %}
+{% include 'include/header.html' %}
+
+<div class="container mt-3">
+  <h4>My Companies</h4>
+
+  <table class="table">
+    <tr>
+      <th>Serial</th>
+      <th>Company Name</th>
+      <th>Coupon</th>
+      <th>Change Company Name</th>
+      <th>Action</th>
+    </tr>
+
+  {% for company in companies %}
+  <tr>
+    <td>{{forloop.counter}}</td>
+    <td>{{company.name}}</td>
+    <td>{{company.coupon}}</td>
+    <form method="post">
+      {% csrf_token %}
+      <td><input name="company" class="form-control" type="text" required></td>
+      <input type="hidden" value="{{company.id}}" name="id">
+      <td> <input type="submit" class="btn btn-outline-primary" name="changeCompany" value="Change"></td>
+    </form>
+  </tr>
+   
+  {% endfor %}
+</table>
+
+<button type="button" class="btn btn-primary float-end mt-5" data-bs-toggle="modal" data-bs-target="#addCompany"> Add New Company </button>
+
+<div class="modal fade " id="addCompany" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-md">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title" id="staticBackdropLabel">Enter Company Name</h4>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+          </div>
+          <form method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="d-flex align-items-end justify-content-between">
+                    <div class="w-100 mx-2">
+                        <input class="form-control" name="companyName" type="text" placeholder="New Company Name" required>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" name="addCompany" class="btn btn-primary">Add Confirm</button>
+            </div>
+        </form>
+      </div>
+  </div>
+</div>
+
+</div>
+{% endblock body %}

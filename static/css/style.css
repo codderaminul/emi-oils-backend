@@ -1,0 +1,673 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+:root {
+    --bg-color: #00455e;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+.section-padding {
+    padding: 50px 0;
+}
+
+.select-btn {
+    background: transparent;
+    border: 1px solid #ced4da;
+    padding: 5px 10px;
+    border-radius: 5px;
+    width: 100%;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+ul li {
+    list-style: none;
+}
+
+/* ==============Header============= */
+
+
+.header {
+    background: #10779d;
+    color: #fff;
+    padding: 10px 0;
+}
+
+.logo .logo-text {
+    font-size: 30px;
+    color: #fff;
+    text-decoration: none;
+    padding: 0px 3px;
+    font-family: sans-serif;
+    font-weight: 700;
+}
+
+
+.login {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    margin: 10px 0;
+}
+
+.login a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+}
+.logo .logo-text span{
+    background: #fff;
+    color: #079b07;
+    margin-right: 4px;
+    padding: 0 3px;
+    font-family: sans-serif;
+    font-weight: 100;
+}
+
+.user-title {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+}
+
+.user-text {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-left: 20px;
+}
+
+.user-title img {
+    width: 30px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+.user-profile .main-menu-active{
+    border-bottom: 2px solid #fff;
+}
+.user-title button {
+    background: transparent;
+    font-size: 18px;
+    border: none;
+    color: #fff;
+    font-weight: 500;
+}
+
+.user-profile-menu {
+    background: #fff;
+    color: #000;
+    position: absolute;
+    right: 0;
+    top: 42px;
+    width: 150px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    padding: 12px;
+}
+
+.mobile-menu i{
+    display: none;
+}
+#menuCloseBtn{
+    display: none;
+}
+.user-profile-menu ul {
+    padding: 0px;
+}
+
+.user-profile-menu li {
+    list-style: none;
+    width: 100%;
+    padding: 8px 5px;
+    margin: 2px 0;
+}
+.user-title .navbar{
+    display: flex;
+    align-items: center;
+    margin: 0;
+    margin-right: 10px;
+    gap: 20px;
+}
+.user-title .navbar li a{
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    padding-bottom: 5px;
+}
+.user-title .navbar li a:hover{
+    border-bottom: 2px solid #fff;
+}
+
+.user-profile-menu .inner-menu a {
+    color: #000 !important;
+    text-decoration: none !important;
+    font-size: 18px !important;
+}
+
+.email-sending label {
+    font-size: 15px;
+    margin: 5px;
+    margin-top: 15px;
+    font-weight: 500;
+}
+
+.email-sending h5 {
+    font-size: 18px;
+    margin: 8px 0;
+    margin-top: 15px;
+    font-weight: 500;
+}
+
+.email-sending h2 {
+    font-size: 25px;
+    margin: 0;
+}
+
+.email-sending p {
+    font-size: 15px;
+}
+
+.mail-writting textarea {
+    height: 200px;
+}
+
+.mail-send-btn button {
+    margin: 10px 0;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+
+
+
+.email-list input[type="checkbox"] {
+    cursor: pointer;
+    height: 18px;
+    width: 18px;
+}
+
+.email-list {
+    max-height: 220px;
+    overflow-y: scroll;
+}
+.email-list::-webkit-scrollbar {
+    width: 2px;
+  }
+  
+  .email-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  .email-list::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+
+.email-list label {
+    cursor: pointer;
+    margin: 0 8px;
+    font-size: 18px;
+}
+
+.selected-email-preview {
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    padding: 10px 8px;
+    margin-top: 50px;
+}
+
+.selected-email-preview h3 {
+    font-size: 18px;
+    text-align: center;
+    border-bottom: 1px solid #ced4da;
+    padding: 5px 0;
+}
+
+.email-preview-list {
+    height: 450px;
+    overflow-y: scroll;
+}
+
+.email-preview-list thead {
+    font-size: 13px;
+}
+
+.email-preview-list tbody {
+    font-size: 12px;
+}
+
+.email-preview-list ol li {
+    padding: 5px 0;
+    margin: 2px 0;
+    font-size: 15px;
+}
+
+
+
+/* ======Resister Page====== */
+
+.resister-section {
+    max-width: 400px;
+    margin: auto;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    padding: 40px 20px;
+}
+
+.resister-header h2 {
+    font-size: 25px;
+    margin: 10px 0;
+}
+
+.resister-header p {
+    font-size: 15px;
+    margin-bottom: 25px;
+}
+
+.resister-form label {
+    font-size: 15px;
+    font-weight: 500;
+    margin: 5px 0;
+}
+
+.resister-section span {
+    display: flex;
+    justify-content: center;
+    font-size: 20px;
+    margin: 10px 0;
+    font-weight: 600;
+}
+
+.resister-google a {
+    border: 1px solid #ced4da;
+    width: 100%;
+    padding: 5px 15px;
+    border-radius: 5px;
+    color: #000;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+}
+
+.resister-google a img {
+    margin-right: 5px;
+}
+
+.resister-form p {
+    font-size: 18px;
+    text-align: center;
+    font-weight: 400;
+}
+
+.resister-form p a {
+    font-weight: 600;
+    margin-left: 5px;
+    text-decoration: none;
+}
+
+.resister-form p a:hover {
+    text-decoration: underline;
+}
+
+.resister-form .forger-password {
+    color: rgb(255, 21, 21);
+    text-decoration: none;
+    font-size: 15px;
+}
+
+.resister-form .forger-password:hover {
+    text-decoration: underline;
+}
+
+
+/* =======Password Hide Show======== */
+
+.password-hide-show {
+    position: relative;
+}
+
+.password-hide-show i {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    color: silver;
+    cursor: pointer;
+}
+
+.when-send-date {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+
+/* width */
+.email-preview-list::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+.email-preview-list::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 50px;
+}
+
+/* Handle */
+.email-preview-list::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+@media only screen and (max-width: 767px) {
+    .email-list table {
+        width: 150%;
+    }
+    .reciver-email .col-md-6{
+        border: 1px solid silver;
+        margin-bottom: 15px;
+        padding: unset;
+    }
+    .mobile-menu i{
+        display: block;
+    }
+    #menuCloseBtn{
+        display: block;
+    }
+    .user-title .navbar{
+        display: block;
+        position: fixed;
+        background: var(--bg-color);
+        z-index: 999;
+        height: 100%;
+        width: 80%;
+        right: -100%;
+        top: 0;
+        gap: 10px;
+        padding: 20px;
+        margin: 20px 0;
+        transition: .8s;
+    }
+    .user-title .navbar li{
+        padding: 10px 0;
+    }
+    .user-text {
+        margin-left: 0;
+    }
+}
+
+.tox-promotion {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.tox-statusbar__branding {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.uk-switcher>:not(.uk-active) {
+    display: none;
+}
+
+
+*,
+.dropdown-wrapper:before,
+.dropdown-wrapper:after {
+    -webkit-box-sizing: inherit;
+    box-sizing: inherit;
+}
+
+.dropdown-wrapper {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+/*-------------------
+        Links
+--------------------*/
+
+.dropdown a {
+    color: #4183C4;
+    text-decoration: none;
+}
+
+.dropdown a:hover {
+    color: #1e70bf;
+    text-decoration: none;
+}
+
+.transition.slide.in,
+.transition[class*="slide down"].in {
+    -webkit-animation-name: slideInY;
+    animation-name: slideInY;
+    -webkit-transform-origin: top center;
+    transform-origin: top center
+}
+
+.transition[class*="slide up"].in {
+    -webkit-animation-name: slideInY;
+    animation-name: slideInY;
+    -webkit-transform-origin: bottom center;
+    transform-origin: bottom center
+}
+
+.transition[class*="slide left"].in {
+    -webkit-animation-name: slideInX;
+    animation-name: slideInX;
+    -webkit-transform-origin: center right;
+    transform-origin: center right
+}
+
+.transition[class*="slide right"].in {
+    -webkit-animation-name: slideInX;
+    animation-name: slideInX;
+    -webkit-transform-origin: center left;
+    transform-origin: center left
+}
+
+.transition.slide.out,
+.transition[class*="slide down"].out {
+    -webkit-animation-name: slideOutY;
+    animation-name: slideOutY;
+    -webkit-transform-origin: top center;
+    transform-origin: top center
+}
+
+.transition[class*="slide up"].out {
+    -webkit-animation-name: slideOutY;
+    animation-name: slideOutY;
+    -webkit-transform-origin: bottom center;
+    transform-origin: bottom center
+}
+
+.transition[class*="slide left"].out {
+    -webkit-animation-name: slideOutX;
+    animation-name: slideOutX;
+    -webkit-transform-origin: center right;
+    transform-origin: center right
+}
+
+.transition[class*="slide right"].out {
+    -webkit-animation-name: slideOutX;
+    animation-name: slideOutX;
+    -webkit-transform-origin: center left;
+    transform-origin: center left
+}
+
+@-webkit-keyframes slideInY {
+    0% {
+        opacity: 0;
+        -webkit-transform: scaleY(0);
+        transform: scaleY(0)
+    }
+
+    100% {
+        opacity: 1;
+        -webkit-transform: scaleY(1);
+        transform: scaleY(1)
+    }
+}
+
+@keyframes slideInY {
+    0% {
+        opacity: 0;
+        -webkit-transform: scaleY(0);
+        transform: scaleY(0)
+    }
+
+    100% {
+        opacity: 1;
+        -webkit-transform: scaleY(1);
+        transform: scaleY(1)
+    }
+}
+
+@-webkit-keyframes slideInX {
+    0% {
+        opacity: 0;
+        -webkit-transform: scaleX(0);
+        transform: scaleX(0)
+    }
+
+    100% {
+        opacity: 1;
+        -webkit-transform: scaleX(1);
+        transform: scaleX(1)
+    }
+}
+
+@keyframes slideInX {
+    0% {
+        opacity: 0;
+        -webkit-transform: scaleX(0);
+        transform: scaleX(0)
+    }
+
+    100% {
+        opacity: 1;
+        -webkit-transform: scaleX(1);
+        transform: scaleX(1)
+    }
+}
+
+@-webkit-keyframes slideOutY {
+    0% {
+        opacity: 1;
+        -webkit-transform: scaleY(1);
+        transform: scaleY(1)
+    }
+
+    100% {
+        opacity: 0;
+        -webkit-transform: scaleY(0);
+        transform: scaleY(0)
+    }
+}
+
+@keyframes slideOutY {
+    0% {
+        opacity: 1;
+        -webkit-transform: scaleY(1);
+        transform: scaleY(1)
+    }
+
+    100% {
+        opacity: 0;
+        -webkit-transform: scaleY(0);
+        transform: scaleY(0)
+    }
+}
+
+@-webkit-keyframes slideOutX {
+    0% {
+        opacity: 1;
+        -webkit-transform: scaleX(1);
+        transform: scaleX(1)
+    }
+
+    100% {
+        opacity: 0;
+        -webkit-transform: scaleX(0);
+        transform: scaleX(0)
+    }
+}
+
+@keyframes slideOutX {
+    0% {
+        opacity: 1;
+        -webkit-transform: scaleX(1);
+        transform: scaleX(1)
+    }
+
+    100% {
+        opacity: 0;
+        -webkit-transform: scaleX(0);
+        transform: scaleX(0)
+    }
+}
+
+.content label{
+    margin: 0;
+    margin-bottom: 5px;
+}
+
+.content2 label{
+    font-size: 15px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.add-category h4, .email-list h4{
+    border: none;
+    font-size: 20px;
+    margin: 15px auto;
+    text-align: center;
+    font-weight: 500;
+    border-bottom: 1px solid silver;
+    padding-bottom: 10px;
+}
+.add-category i{
+    margin-right: 5px;
+}
+
+.add-category-input{
+    padding: 0 15px;
+}
+.add-category-input input:focus{
+    outline: none;
+}
+.add-category-input button{
+    background: transparent;
+    border: 1px solid silver;
+    border-radius: 5px;
+    width: 100%;
+    padding: 4px 5px;
+}
+.add-category-input .select-btn{
+    margin: 10px auto;
+    width: 100%;
+    border-radius: 5px;
+    background: cadetblue;
+    padding: 5px 1px;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.reciver-email .col-md-6{
+    border: 1px solid silver;
+    margin-bottom: 15px;
+    padding: 0;
+}

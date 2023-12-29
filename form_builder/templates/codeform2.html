@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Form 2{% endblock title %}
+{% block body %}
+{% include 'include/header.html' %} 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet" href="{% static 'css/form2_style.css' %}">
+
+</head>
+
+<body>
+<div class="code-show-container">
+<h4 class="mt-4 text-success text-center">Your Form Code</h4>
+<div class="css-show-code">
+    <pre class='code code-css'><label>CSS</label><code id="code1">
+<i rel="pre">
+&lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" /&gt;
+&lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" /&gt;
+&lt;link rel="stylesheet" href="http://127.0.0.1:8000/static/css/form2_style.css"&gt;
+</i>
+    </code>
+    </pre>
+    <button id="copy-button1">Copy</button>
+</div>
+
+<div class="css-show-code">
+    <pre class='code code-html code-css'><label>HTML</label><code id="code2">
+<i rel="pre">
+&lt;div class="form-container"&gt;
+    &lt;div class="comming-1"&gt;
+        &lt;div class="comming-mail-input"&gt;
+            &lt;div class="comming-mail-input-header"&gt;
+                &lt;img src="http://127.0.0.1:8000/static/images/img1.png" alt=""&gt;
+                &lt;h2&gt;Subscriptions&lt;/h2&gt;
+                &lt;p&gt;Lorem ipsum dolor sit amet consectetur adipisicing elit.&lt;/p&gt;
+            &lt;/div&gt;
+            &lt;div class="comming-mail-input-body"&gt;
+                &lt;div class="input-group flex-nowrap"&gt;
+                    &lt;span class="input-group-text" id="addon-wrapping"&gt;&lt;i class="fa-solid fa-user"&gt;&lt;/i&gt;&lt;/span&gt;
+                    &lt;input type="text" class="form-control" placeholder="First Name.." aria-label="firstname" aria-describedby="addon-wrapping" id="first_name" name="first_name"&gt;
+                &lt;/div&gt;
+                &lt;div class="input-group flex-nowrap"&gt;
+                    &lt;span class="input-group-text" id="addon-wrapping"&gt;&lt;i class="fa-solid fa-user"&gt;&lt;/i&gt;&lt;/span&gt;
+                    &lt;input type="text" class="form-control" placeholder="Last Name.." aria-label="lastname" aria-describedby="addon-wrapping" id="last_name" name="last_name"&gt;
+                &lt;/div&gt;
+                &lt;div class="input-group flex-nowrap"&gt;
+                    &lt;span class="input-group-text" id="addon-wrapping"&gt;&lt;i class="fa-solid fa-envelope"&gt;&lt;/i&gt;&lt;/span&gt;
+                    &lt;input type="eamil" class="form-control" placeholder="Enter E-mail.." aria-label="email" aria-describedby="addon-wrapping" id="email" name="email"&gt;
+                &lt;/div&gt;
+                &lt;div class="input-group flex-nowrap"&gt;
+                    &lt;span class="input-group-text" id="addon-wrapping"&gt;&lt;i class="fa-solid fa-phone"&gt;&lt;/i&gt;&lt;/span&gt;
+                    &lt;input type="number" class="form-control" placeholder="Phone Number.." aria-label="phone" aria-describedby="addon-wrapping" id="phone" name="phone"&gt;
+                &lt;/div&gt;
+
+                &lt;div id="susbscribe1" class="my-2 text-success text-center"&gt;&lt;/div&gt;
+                &lt;div id="susbscribe2" class="my-2 text-danger text-center"&gt;&lt;/div&gt;
+                &lt;div class="subcribe-btn"&gt;
+                    &lt;button onclick="subscribe()" class="subscribebtn" type="submit"&gt;Submit&lt;/button&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+            
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</i>
+    </code>
+    </pre>
+    <button id="copy-button2">Copy</button>
+</div>
+
+<div class="css-show-code">
+    <pre class='code code-css'><label>JS</label><code id="code3">
+<i rel="pre">
+&lt;script&gt;
+    var companyData = {
+        company_name: '{{company.name}}',
+        company_coupon: '{{company.coupon}}'
+    };
+&lt;/script&gt;
+&lt;script src="http://127.0.0.1:8000/static/js/builder_form.js"&gt;&lt;/script&gt;
+</i>
+    </code>
+    </pre>
+    <button id="copy-button3">Copy</button>
+</div>
+
+</div>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+    const codeBlock1 = document.getElementById('code1');
+    const codeBlock2 = document.getElementById('code2');
+    const codeBlock3 = document.getElementById('code3');
+    const copyButton1 = document.getElementById('copy-button1');
+    const copyButton2 = document.getElementById('copy-button2');
+    const copyButton3 = document.getElementById('copy-button3');
+
+    // HTML
+    const copyTextHandler1 = () => {
+    const text = codeBlock1.innerText;
+
+    navigator.clipboard.writeText(text).then(
+        () => {
+        copyButton1.innerHTML = "Copied!";
+        setTimeout(() => {
+            copyButton1.innerHTML = "Copy";
+        }, 1000);
+        }
+    );
+    };
+
+    copyButton1.addEventListener('click', copyTextHandler1);
+
+    // CSS
+    const copyTextHandler2 = () => {
+    const text = codeBlock2.innerText;
+
+    navigator.clipboard.writeText(text).then(
+        () => {
+        copyButton2.innerHTML = "Copied!";
+        setTimeout(() => {
+            copyButton2.innerHTML = "Copy";
+        }, 1000);
+        }
+    );
+    };
+
+    copyButton2.addEventListener('click', copyTextHandler2);
+
+
+    // JavaScript
+    const copyTextHandler3 = () => {
+    const text = codeBlock3.innerText;
+
+    navigator.clipboard.writeText(text).then(
+        () => {
+        copyButton3.innerHTML = "Copied!";
+        setTimeout(() => {
+            copyButton3.innerHTML = "Copy";
+        }, 1000);
+        }
+    );
+    };
+
+    copyButton3.addEventListener('click', copyTextHandler3);
+});
+
+</script>
+
+{% endblock body %}
+
+

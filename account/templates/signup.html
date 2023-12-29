@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Signup{% endblock title %}
+{% block body %}
+{% include 'include/header.html' %}
+ 
+<section class="section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <form class="form" method="post">
+                    {% csrf_token %}
+                    <div class="resister-section">
+                        <div class="resister-header">
+                            <h2>Resister to Your accont</h2>
+                            <p>Please fill in this form to create an account.</p>
+                        </div>
+                        
+                        <div class="resister-google">
+                            <a href="{% url 'social:begin' 'google-oauth2' %}?next=/accounts/social/signup/"  type="button"> <img src="{% static 'images/google.svg' %}" alt=""> Sign Up with Google</a>
+                        </div>
+
+                        <span>or</span>
+
+                        <div class="resister-form">
+                            <label for="first_name">First Name:</label>
+                            <input type="text" name="first_name" id="first_name" class="form-control" required>
+                            <label for="last_name">Last Name:</label>
+                            <input type="text" name="last_name" id="last_name" class="form-control" required>
+                            <label for="email">E-mail:</label>
+                            <input type="email" name="email" id="email" class="form-control" required>
+
+                            <div class="password-hide-show" id="pass_sho_hi">
+                                <label for="password">Password:</label>
+                                <input type="password" name="password" id="password" class="form-control mb-2" required>
+                                <div id="password-hide-show-btn">
+                                    <i id="password-show" class="fa-solid fa-eye d-none"></i>
+                                    <i id="password-hide" class="fa-solid fa-eye-slash"></i>
+                                </div>
+                            </div>
+                            <div class="password-hide-show">
+                                <label for="password2">Confirm Password:</label>
+                                <input type="password" name="repassword" id="password2" class="form-control mb-2" required>
+                                <div id="password-hide-show-btn2">
+                                    <i id="password-show2" class="fa-solid fa-eye d-none"></i>
+                                    <i id="password-hide2" class="fa-solid fa-eye-slash"></i>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-success my-3 fw-semibold w-100">Register</button>
+                            <hr>
+
+                            <p>Already have an account? <a href="{% url 'accounts:login' %}">Login</a></p>
+                        </div>
+                       
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock body %}
+
+    

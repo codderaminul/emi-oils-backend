@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}CSV Upload{% endblock title %}
+{% block body %}
+{% include 'include/header.html' %}
+
+<div class="container">
+    <div class="w-50 py-5 mx-auto">
+        <div class="row">
+            <img src="{% static 'images/csv_structure.png' %}" style="position: center center;" alt="">
+            <a class="d-block mb-4 text-decoration-none text-center" href="{% static 'images/Sample-CSV.csv' %}" download>Download Sample CSV</a>
+        </div>
+
+        <form id="upload-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label class="mb-2" for="company">Company</label>
+            <select class="form-control mb-4" name="company" id="company">
+                {% for company in companies %}
+                <option value="{{company.name}}">{{company.name}}</option>
+                {% endfor %}
+            </select>
+            <label class="mb-2 d-block" for="csv">Select CSV file</label>
+            <input class="form-control" type="file" name="csv" id="csv" required>
+
+            <div class="progress mt-3" style="display: none;">
+                <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+            </div>
+            <div id="progress-message" class="mt-2"></div>
+            <button type="button" id="submit-btn" class="btn btn-success w-100 mt-3">Click to Upload</button>
+        </form>
+    </div>
+</div>
+{% endblock body %}
+
+{% block script %}
+<script>
+    document.getElementById('submit-btn').addEventListener('click', function () {
+    var form = document.getElementById('upload-form');
+    var formData = new FormData(form);
+    var progressBar = document.querySelector('.progress');
+    var progressMessage = document.getElementById('progress-message');
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '{% url "core:upload_csv" %}', true);
+
+    // Track upload progress
+    xhr.upload.onprogress = function (e) {
+        if (e.lengthComputable) {
+            var percentage = (e.loaded / e.total) * 100;
+            progressBar.style.display = 'block';
+            progressBar.querySelector('.progress-bar').style.width = percentage + '%';
+            progressBar.querySelector('.progress-bar').innerText = Math.round(percentage) + '%';
+            progressMessage.style.color = 'green';
+            progressMessage.innerText = 'Uploading...';
+        }
+    };
+
+    // Handle upload completion
+    xhr.onload = function () {
+        const response = JSON.parse(xhr.responseText);
+        if (response.status === 'success') {
+            progressMessage.style.color = 'green';
+            }
+        if(response.status === 'error') {
+                progressMessage.style.color = 'red';
+        }
+        if (xhr.status === 200) {
+            progressBar.style.display = 'none';
+            progressMessage.innerText = response.message;
+            // Handle any other actions after upload completion
+        } else {
+            progressBar.style.display = 'none';
+            progressMessage.innerText = 'Error uploading file.';
+            // Handle error scenarios
+        }
+    };
+
+    // Send the form data
+    xhr.send(formData);
+});
+</script>
+
+{% endblock script %}

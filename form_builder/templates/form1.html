@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Form 1{% endblock title %}
+{% block body %}
+{% include 'include/header.html' %}
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="{% static 'css/form1_style.css' %}">
+
+    <div class="">
+        <div class="form-container">
+            <div class="comming-1">
+                <div class="comming-mail-input">
+                    <div class="comming-mail-input-header">
+                        <h2>Subscription Page</h2>
+                    </div>
+                    <div class="comming-mail-input-body">
+                        <div class="firstlastName">
+                            <div class="firstName">
+                                <label for="">First Name: </label>
+                                <div class="comming-input-parent">
+                                    <input type="text" id="first_name" name="first_name">
+                                    <div class="input-icon">
+                                        <i class="fa-solid fa-user"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="lastName">
+                                <label for="">Last Name: </label>
+                                <div class="comming-input-parent">
+                                    <input type="text" id="last_name" name="last_name">
+                                    <div class="input-icon">
+                                        <i class="fa-solid fa-user"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="">E-mail:</label>
+                            <div class="comming-input-parent">
+                                <input type="email" id="email" name="email">
+                                <div class="input-icon">
+                                    <i class="fa-solid fa-envelope"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="">Phone: </label>
+                            <div class="comming-input-parent">
+                                <input type="number" id="phone" name="phone">
+                                <div class="input-icon">
+                                    <i class="fa-solid fa-phone"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="susbscribe1" class="my-2 text-success text-center"></div>
+                        <div id="susbscribe2" class="my-2 text-danger text-center"></div>
+                        <div class="subcribe-btn">
+                            <button onclick="subscribe()" class="subscribebtn" type="submit">Submit</button>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        
+
+    </div>
+
+    <div class="container">
+        <div class="subcribe-next-btn">
+            <a href="{% url 'form_builder:form_page' 'code'|add:page_name %}">Next</a>
+        </div>
+    </div>
+{% endblock body %}
+
+{% block script %}
+<script>
+    var companyData = {
+        company_name: '{{company.name}}',
+        company_coupon: '{{company.coupon}}'
+    };
+</script>
+<script src="{% static 'js/builder_form.js' %}"></script>
+{% endblock script %}

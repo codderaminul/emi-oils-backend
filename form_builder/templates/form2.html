@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Form 2{% endblock title %}
+{% block body %}
+{% include 'include/header.html' %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" />
+<link rel="stylesheet" href="{% static 'css/form2_style.css' %}">
+
+<div class="form-container">
+    <div class="comming-1">
+        <div class="comming-mail-input">
+            <div class="comming-mail-input-header">
+                <img src="../../static/images/img1.png" alt="">
+                <h2>Subscriptions</h2>
+                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+            </div>
+            <div class="comming-mail-input-body">
+                <div class="input-group flex-nowrap">
+                    <span class="input-group-text" id="addon-wrapping"><i class="fa-solid fa-user"></i></span>
+                    <input type="text" class="form-control" placeholder="First Name.." aria-label="firstname" aria-describedby="addon-wrapping" id="first_name" name="first_name">
+                </div>
+                <div class="input-group flex-nowrap">
+                    <span class="input-group-text" id="addon-wrapping"><i class="fa-solid fa-user"></i></span>
+                    <input type="text" class="form-control" placeholder="Last Name.." aria-label="lastname" aria-describedby="addon-wrapping" id="last_name" name="last_name">
+                </div>
+                <div class="input-group flex-nowrap">
+                    <span class="input-group-text" id="addon-wrapping"><i class="fa-solid fa-envelope"></i></span>
+                    <input type="eamil" class="form-control" placeholder="Enter E-mail.." aria-label="email" aria-describedby="addon-wrapping" id="email" name="email">
+                </div>
+                <div class="input-group flex-nowrap">
+                    <span class="input-group-text" id="addon-wrapping"><i class="fa-solid fa-phone"></i></span>
+                    <input type="number" class="form-control" placeholder="Phone Number.." aria-label="phone" aria-describedby="addon-wrapping" id="phone" name="phone">
+                </div>
+
+                <div id="susbscribe1" class="my-2 text-success text-center"></div>
+                <div id="susbscribe2" class="my-2 text-danger text-center"></div>
+                <div class="subcribe-btn">
+                    <button onclick="subscribe()" class="subscribebtn" type="submit">Submit</button>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="subcribe-next-btn">
+        <a href="{% url 'form_builder:form_page' 'code'|add:page_name %}">Next</a>
+    </div>
+</div>
+{% endblock body %}
+
+
+{% block script %}
+<script>
+    var companyData = {
+        company_name: '{{company.name}}',
+        company_coupon: '{{company.coupon}}'
+    };
+</script>
+<script src="{% static 'js/builder_form.js' %}"></script>
+{% endblock script %}
+    
+
+

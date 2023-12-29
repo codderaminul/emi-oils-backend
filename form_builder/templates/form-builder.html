@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Form Builder{% endblock title %}
+{% block body %}
+{% include 'include/header.html' %}
+
+<div class="container mt-5 mb-3">
+    <h4 class="mb-5">Form Builder</h4>
+    <div class="row">
+        <div class="col-3">
+            <a href="{% url 'form_builder:form_page' 'form1.html' %}"><img style="height: 250px;width: 230px;border:1px solid black;" src="{% static 'images/form1.png' %}" alt=""></a>
+        </div>
+        <div class="col-3">
+            <a href="{% url 'form_builder:form_page' 'form2.html' %}"><img style="height: 250px;width: 230px;border:1px solid black;" src="{% static 'images/form2.png' %}" alt=""></a>
+            
+        </div>
+    </div>
+</div>
+{% endblock body %}

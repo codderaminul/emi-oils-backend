@@ -1,0 +1,116 @@
+{% load static %}
+<header class="header">
+    <div class="container">
+        <div class="row">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="logo">
+                        <a href="{% url 'tbm:index' %}" class="logo-text main-menu" data-menu="home"> <span>Hello</span>dear</a>
+                    </div>
+                </div>
+                <div>
+                    <!-- When Login Status True -->
+                    
+                    {% if request.user.is_staff %}
+                    <div class="user-profile" >
+                        <div class="user-title" id="all-div">
+                            <div>
+                                <ul class="navbar" id="navbar">
+                                    <div>
+										<i id="menuCloseBtn" class="fa-solid fa-arrow-right"></i>
+									</div>
+                                    <li><a href="{% url 'tbm:index' %}" class="main-menu" data-menu="home"><i class="fa-solid fa-house-chimney"></i> Home</a></li>
+                                    <li><a href="{% url 'core:upload_csv' %}" class="main-menu" data-menu="upload"><i class="fa-solid fa-cloud-arrow-up"></i> Upload CSV</a></li>
+                                    <li><a href="{% url 'form_builder:builder_page' %}" class="main-menu" data-menu="form"><i class="fa-solid fa-building-circle-check"></i> Form Builder</a></li>
+                                    <li><a href="{% url 'tbm:subscribers' %}" class="main-menu" data-menu="toufic"><i class="fa-solid fa-users"></i> Audience</a></li>
+                                    <li><a href="{% url 'tbm:index' %}" class="main-menu" data-menu="email"><i class="fa-solid fa-envelope-circle-check"></i> Send E-mail</a></li>
+                                    <li><a href="{% url 'tbm:send_sms' %}" class="main-menu" data-menu="sms"><i class="fa-solid fa-message"></i> Send SMS</a></li>
+                                    <li id="user-profile" class="user-text">
+                                        <div>
+                                            <img src="{% static 'images/avater.png' %}" alt="">
+                                            <button>{{request.user.username|slice:"15"}}</button>
+                                            <div class="user-profile-menu d-none" id="user-profile-menu">
+                                                <ul>
+                                                    <li class="inner-menu"><a href="{% url 'accounts:profile' %}" class="main-menu" data-menu="profile" disabled>My Profile</a></li>
+                                                    <li class="inner-menu"><a href="{% url 'accounts:logout' %}">Log out</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mobile-menu">
+                        <i id="mobile-menu-btn" class="fa-solid fa-bars"></i>
+                    </div>
+                    {% else %} 
+                    <div class="login">
+                        <a href="{% url 'accounts:login' %}">Login</a>
+                    </div>   
+                    {% endif %}
+                        
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<script>
+    const userProfile = document.getElementById('user-profile');
+    const showUserProfile = document.getElementById('user-profile-menu');
+    const allDiv = document.getElementById('all-div');
+
+
+    userProfile.addEventListener('click', () => {
+        showUserProfile.classList.toggle('d-none');
+    });
+
+
+    document.addEventListener('click', (event) => {
+        if (!userProfile.contains(event.target)) {
+            showUserProfile.classList.add('d-none');
+        }else{
+            showUserProfile.classList.remove('d-none');
+        }
+    });
+
+
+       // Mobile Menu Button Toggle
+       const menuBtn = document.getElementById('mobile-menu-btn');
+    const menuCloseBtn = document.getElementById('menuCloseBtn');
+    const navbarContent = document.getElementById('navbar');
+
+    menuBtn.addEventListener('click', ()=>{
+        navbarContent.style.right = "0"; 
+    })
+    menuCloseBtn.addEventListener('click', ()=>{
+        navbarContent.style.right = "-100%"; 
+    })
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Check if an active menu is stored in localStorage
+        var activeMenu = sessionStorage.getItem("activeMenu");
+        
+        // If an active menu is found, set it as active; otherwise, default to "Home"
+        if (activeMenu) {
+            $(".main-menu[data-menu='" + activeMenu + "']").addClass("main-menu-active");
+        } else {
+            $(".main-menu[data-menu='home']").addClass("main-menu-active");
+        }
+
+        $(".main-menu").click(function () {
+            // Remove the active class from all menu items
+            $(".main-menu").removeClass("main-menu-active");
+            
+            // Add the active class to the clicked menu item
+            $(this).addClass("main-menu-active");
+
+            // Store the active menu in localStorage
+            sessionStorage.setItem("activeMenu", $(this).data("menu"));
+        });
+    });
+</script>

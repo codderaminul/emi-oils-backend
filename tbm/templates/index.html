@@ -1,0 +1,466 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Send Email{% endblock title %}
+{% block body %}
+{% include 'include/header.html' %}
+
+<section class="section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">            
+                <div class="email-sending">
+                    <div class="reciver-email">
+                        <h5 class="mt-4" for="receiver">Recipients</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="email-list">
+                                    <h4>Select Category</h4>
+                                    <ul>
+                                        {% for category in categories %}
+                                        <li class="d-flex align-items-center">
+                                            <input type="checkbox" name="categories" id="{{category.id}}">
+                                            <label class="me-4" for="{{category.id}}">{{category.name}}<span> ({{category.subscriber.all|length}})</span> </label>
+                                            <a class="btn ms-5" onclick="edit_category({{category.id}})" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Edit</a>
+                                            <a class="btn" onclick="delete_category({{category.id}})" href="">Delete</a>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="category_data" id="category_data">
+                        <div class="when-send">
+                            <h5 for="send">When to Send</h5>
+                            <select name="moment1" id="selectField" class="form-select">
+                                <option value="now" selected="selected">Now</option>
+                                <option value="once">Once</option>
+                                <option value="recuring">Recurring</option>
+                            </select>
+                            <div id="recuring" class="content mt-2">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="repeat">Repeat</label>
+                                        <select name="moment2" id="selectField2" class="form-select mb-2">
+                                            <option>Select Here</option>
+                                            <option value="daily">Daily</option>
+                                            <option value="weekly">Weekly</option>
+                                            <option value="monthly">Monthly</option>
+                                            <option value="yearly">Yearly</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div id="weekly" class="content2">
+                                            <input type="checkbox"  name="moment3" value="sat" id="sat">
+                                            <label for="sat">Sat</label>
+
+                                            <input type="checkbox"  name="moment3" value="sun" id="sun">
+                                            <label for="sun">Sun</label>
+
+                                            <input type="checkbox"  name="moment3" value="mon" id="mon">
+                                            <label for="mon">Mon</label>
+
+                                            <input type="checkbox"  name="moment3" value="tue" id="tue">
+                                            <label for="tue">Tue</label>
+
+                                            <input type="checkbox"  name="moment3" value="wed" id="wed">
+                                            <label for="wed">Wed</label>
+
+                                            <input type="checkbox"  name="moment3" value="thu" id="thu">
+                                            <label for="thu">Thu</label>
+
+                                            <input type="checkbox"  name="moment3" value="fri" id="fri">
+                                            <label for="fri">Fri</label>
+                                        </div>
+                                        <div id="monthly" class="content2">
+                                            <input type="checkbox" name="moment4" value="1" id="jan">
+                                            <label for="jan">Jan</label>
+
+                                            <input type="checkbox" name="moment4" value="2" id="feb">
+                                            <label for="feb">Feb</label>
+
+                                            <input type="checkbox" name="moment4" value="3" id="mar">
+                                            <label for="mar">Mar</label>
+
+                                            <input type="checkbox" name="moment4" value="4" id="apr">
+                                            <label for="apr">Apr</label>
+
+                                            <input type="checkbox" name="moment4" value="5" id="may">
+                                            <label for="may">May</label>
+
+                                            <input type="checkbox" name="moment4" value="6" id="jun">
+                                            <label for="jun">Jun</label>
+
+                                            <input type="checkbox" name="moment4" value="7" id="jul">
+                                            <label for="jul">Jul</label>
+
+                                            <input type="checkbox" name="moment4" value="8" id="aug">
+                                            <label for="aug">Aug</label>
+
+                                            <input type="checkbox" name="moment4" value="9" id="sep">
+                                            <label for="sep">Sep</label>
+
+                                            <input type="checkbox" name="moment4" value="10" id="oct">
+                                            <label for="oct">Oct</label>
+
+                                            <input type="checkbox" name="moment4" value="11" id="nov">
+                                            <label for="nov">Nov</label>
+
+                                            <input type="checkbox" name="moment4" value="12" id="dec">
+                                            <label for="dec">Dec</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="once" class="content mt-2">
+                                <div class="row">
+                                    <div class="col-md-6" id="schedule_date">
+                                        <label for="start-date">Starts</label>
+                                        <input type="date" name="date" class="form-control">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="start-time">Send Time</label>
+                                        <input type="time" name="time" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                        <div class="email-title">
+                            <label for="title">Title</label>
+                            <input type="text" name="subject" id="title" class="form-control" required>
+                        </div>
+
+                        <div class="mail-writting">
+                            <label for="writting"></label>
+                            <textarea name="message" id="writting" class="form-control" placeholder="Type Message"></textarea>
+                            
+                        </div>
+
+                        <div class="mail-send-btn">
+                            <button name="send_email" type="submit" class="btn btn-primary w-100">Send Email</button>
+                        </div>
+                    </form>  
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="selected-email-preview">
+                    <h3>Selected E-mail Preview</h3>
+                    <div class="email-preview-list">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">E-mail</th>
+                                    <th scope="col">Create Date</th>
+                                    <th scope="col">Country</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock body %}
+
+{% block script %}
+<script src="https://cdn.tiny.cloud/1/npsp88ndqlces1ifbacvhkcqe2wfx7c85fmxr2sg3te4zq88/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    // For Tinymce Editor
+    tinymce.init({
+        selector: 'textarea', // change this value according to your HTML
+        plugins: 'a_tinymce_plugin',
+        a_plugin_option: true,
+        a_configuration_option: 400,
+        height: 400,
+    });
+</script>
+<script>
+    const checkboxes = document.querySelectorAll('input[name="categories"]');
+    const tableBody = document.getElementById('table-body');
+    const dataCache = {};
+    
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                var CSRFToken = document.querySelector('input[name=csrfmiddlewaretoken]').value;
+                var formdata = new FormData();
+                formdata.append("csrfmiddlewaretoken", CSRFToken);
+                fetch("/get-category/" + this.id, {
+                    method: "POST",
+                    headers: new Headers(),
+                    body: formdata,
+                })
+                .then((result) => { return result.json() })
+                .then((data) => { 
+                    dataCache[this.id] = data.subscriber_list;
+                    renderData();
+                });
+            } else {
+                delete dataCache[this.id];
+                renderData();
+            }
+        });
+    });
+
+    function renderData() {
+        // Clear the table body
+        tableBody.innerHTML = '';
+        // Create a set to store unique email addresses
+        const uniqueEmails = new Set();
+        const categoryData = [];
+        // Render the data from dataCache
+        for (const categoryID in dataCache) {
+            const categoryDataArray = dataCache[categoryID];
+            categoryDataArray.forEach(data => {
+                const email = data.email;
+
+                // Check if the email is not in the uniqueEmails set
+                if (!uniqueEmails.has(email)) {
+                    uniqueEmails.add(email);
+
+                    const row = document.createElement('tr');
+                    row.className = `category-data category-${data.country}`;
+                    row.innerHTML = `
+                        <td>${email}</td>
+                        <td>${data.created_at}</td>
+                        <td>${data.country}</td>
+                    `;
+                    tableBody.appendChild(row);
+                }
+            });
+            // Add category data to categoryData
+            categoryData.push(...categoryDataArray);
+        }
+        const categoryDataInput = document.getElementById('category_data');
+        categoryDataInput.value = JSON.stringify(categoryData);
+    }
+</script>
+
+<script>
+    // For datepicker in category modals
+    document.addEventListener("DOMContentLoaded", function () {
+        // When the dropdown changes, show or hide the date input
+        const dateFilter = document.getElementById("dateFilter");
+        const dateInput = document.getElementById("datepicker");
+        dateFilter.addEventListener('change', function () {
+            const selectedValue = dateFilter.value;
+    
+            if (selectedValue === "before" || selectedValue === "after") {
+                dateInput.style.display = "block";
+            } else {
+                dateInput.style.display = "none";
+            }
+        });
+    });
+</script>
+
+<script>
+    // For the table selection
+    document.addEventListener('DOMContentLoaded', function () {
+        var tableRows = document.querySelectorAll('.table-selectable tbody tr');
+        let check = false
+        tableRows.forEach(function (row) {
+            row.addEventListener('click', function () {
+                // row.classList.toggle('selected');
+                var checkbox = row.querySelector('input[type="checkbox"]');
+                checkbox.checked = check;
+                let chkbox;
+                if(!check){
+                    chkbox = !checkbox.checked;
+                }
+                if(chkbox){
+                    check = true
+                    checkbox.checked = check
+                }else{
+                    check = false
+                    checkbox.checked = check
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    // For the first section
+    document.addEventListener('DOMContentLoaded', function () {
+        var contentElements = document.querySelectorAll('.content');
+        var selectField = document.getElementById('selectField');
+
+        contentElements.forEach(function (content) {
+            content.style.display = 'none';
+        });
+
+        selectField.addEventListener('change', function () {
+            contentElements.forEach(function (content) {
+                content.style.display = 'none';
+            });
+            var selectedValue = selectField.value;
+            if (selectedValue == 'once' || selectedValue == 'recuring') {
+                document.getElementById(selectedValue).style.display = 'block';
+                document.getElementById('once').style.display = 'block';
+
+            }
+        });
+    });
+
+    // For the second section
+    document.addEventListener('DOMContentLoaded', function () {
+        var content2Elements = document.querySelectorAll('.content2');
+        var selectField2 = document.getElementById('selectField2');
+
+        content2Elements.forEach(function (content) {
+            content.style.display = 'none';
+        });
+
+        selectField2.addEventListener('change', function () {
+            content2Elements.forEach(function (content) {
+                content.style.display = 'none';
+            });
+            var selectedValue = selectField2.value;
+            document.getElementById('schedule_date').style.display = 'block';
+            if (selectedValue == 'weekly' || selectedValue == 'monthly') {
+                document.getElementById(selectedValue).style.display = 'block';
+            }
+            if(selectedValue == 'daily' || selectedValue == 'weekly'){
+                document.getElementById('schedule_date').style.display = 'none';
+            }
+        });
+    });
+
+    $(document).ready(function(){
+        $("#myInput").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#myTable tr").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
+
+<script>
+    function edit_category(category_id){
+        document.getElementById('category_id').value = category_id;
+        var CSRFToken = document.querySelector('input[name=csrfmiddlewaretoken]').value;
+        var formdata = new FormData(); 
+        formdata.append("category_id",category_id)
+        formdata.append("csrfmiddlewaretoken",CSRFToken)
+        fetch("{% url 'tbm:edit_category' %}" , {
+            method: "POST",
+            headers: new Headers(),
+            body: formdata,
+        })
+        .then((result) => { return result.json() })
+        .then((data) => { 
+            var category_name = document.getElementById('category_name');
+            var subscriberCheckboxes = document.querySelectorAll("input[name='subscribers']");
+            category_name.value=data.category_name;
+            document.getElementById('createCategory').style.display = 'none';
+            document.getElementById('updateCategory').style.display = 'block';
+            subscriberCheckboxes.forEach(function (checkbox) {
+                checkbox.checked = false;
+            });
+
+            data.subscribers.forEach(function (subscriberId) {
+                var checkbox = document.querySelector("input[name='subscribers'][value='" + subscriberId + "']");
+                if (checkbox) {
+                    checkbox.checked = true;
+                }
+            });
+        })
+    }
+
+    function delete_category(category_id){
+        var confirmation = window.confirm("Are you sure you want to delete this category?");
+        if (confirmation){
+            var CSRFToken = document.querySelector('input[name=csrfmiddlewaretoken]').value;
+            var formdata = new FormData(); 
+            formdata.append("category_id",category_id)
+            formdata.append("csrfmiddlewaretoken",CSRFToken)
+            fetch("{% url 'tbm:del_category' %}" , {
+                method: "POST",
+                headers: new Headers(),
+                body: formdata,
+            })
+            .then((result) => { window.location.reload();return result.json() })
+        }
+    }
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // When the dropdown changes, show or hide the date input
+        const dateFilter = document.getElementById("dateFilter");
+        const dateInput = document.getElementById("datepicker");
+        dateFilter.addEventListener('change', function () {
+            const selectedValue = dateFilter.value;
+
+            if (selectedValue === "before" || selectedValue === "after") {
+                dateInput.style.display = "block";
+            } else {
+                dateInput.style.display = "none";
+            }
+        });
+
+        // Add an event listener for the search input
+        const searchInput = document.getElementById("myInput");
+        searchInput.addEventListener("keyup", function () {
+            filterSubscribers();
+        });
+
+        dateFilter.addEventListener('change', function () {
+            filterSubscribers();
+        });
+
+        dateInput.addEventListener('change', function () {
+            filterSubscribers();
+        });
+
+        function filterSubscribers() {
+            const searchText = searchInput.value.toLowerCase();
+            const selectedDateFilter = dateFilter.value;
+            const dateValue = dateInput.value;
+
+            const tableRows = document.querySelectorAll('#myTable tbody tr');
+
+            tableRows.forEach(function (row) {
+                const emailCell = row.querySelector('td:nth-child(2)');
+                const createDateCell = row.querySelector('td:nth-child(3)');
+
+                const email = emailCell.textContent.toLowerCase();
+                const createDate = createDateCell.textContent;
+
+                const showRow = email.includes(searchText) && applyDateFilter(createDate, selectedDateFilter, dateValue);
+                row.style.display = showRow ? 'table-row' : 'none';
+            });
+        }
+
+        function applyDateFilter(dateString, filterType, filterValue) {
+            const createDate = new Date(dateString);
+            const filterDate = new Date(filterValue);
+            if (filterType === "before" && filterValue != '') {
+                return createDate <= filterDate;
+            } else if (filterType === "after" && filterValue != '') {
+                return createDate >= filterDate;
+            } else {
+                return true;  // Show all rows if no date filter is selected
+            }
+        }
+
+    });
+</script>
+{% endblock script %}
+    
+
+    

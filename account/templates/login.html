@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Login{% endblock title %}
+
+{% block body %}
+{% include 'include/header.html' %}
+
+<section class="section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="resister-section">
+                        <div class="resister-header">
+                            <h2 class="text-center">Login account</h2>
+                        </div>
+                        
+                        <div class="resister-google">
+                            <a href="{% url 'social:begin' 'google-oauth2' %}?next=/accounts/social/login/" type="button"> <img src="{% static 'images/google.svg' %}" alt=""> Log In with Google</a>
+                        </div>
+
+                        <span>or</span>
+
+                        <div class="resister-form">
+                            <label for="email">E-mail:</label>
+                            <input type="email" name="email" id="email" class="form-control" required>
+                            <div class="password-hide-show">
+                                <label for="rpassword">Password:</label>
+                                <input type="password" name="password" id="password" class="form-control mb-2" required>
+                                <div id="password-hide-show-btn">
+                                    <i id="password-show" class="fa-solid fa-eye d-none"></i>
+                                    <i id="password-hide" class="fa-solid fa-eye-slash"></i>
+                                </div>
+                            </div>
+
+                            <a href="{% url 'accounts:forgot_password' %}" class="forger-password mt-2">Forget password</a>
+
+                            <button type="submit" class="btn btn-success my-3 fw-semibold w-100">Login</button>
+
+                            <hr>
+
+                            <p>Don't have an account? <a href="{% url 'accounts:signup' %}">Register</a></p>
+                        </div>
+                       
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock body %}
+
+
+
+    
+
+
+      

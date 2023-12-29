@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Verify OTP{% endblock title %}
+{% block body %}
+{% include 'include/header.html' %}
+<section class="section-padding">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="resister-section">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="resister-header">
+                            <h2 class="text-center">Verify OTP</h2>
+                            <p class="mb-4 mt-4">Don't receive OTP code yet? 
+                                <label for="resend"><u style="cursor: pointer;">Resend OTP</u></label>
+                                <input  type="submit" name="resend_otp" class="d-none" id="resend">
+                            </p>
+                        </div>
+                    </form>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="resister-form">
+                            <label for="otp">OTP CODE:</label>
+                            <input type="number" name="otp" id="otp" class="form-control">
+
+                            <button type="submit" name="verify_email" class="btn btn-success my-3 fw-semibold w-100">Check OTP</button>
+                            <hr>
+                            <p>Don't have an account? <a href="{% url 'accounts:signup' %}">Register</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock body %}
