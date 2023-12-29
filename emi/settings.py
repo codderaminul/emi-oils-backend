@@ -141,10 +141,21 @@ AUTH_USER_MODEL = 'account.CustomUser'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'tbm',
+        'USER': 'root',
+        'PASSWORD': 'root',
+        'HOST': 'localhost',
+        'PORT': '5432', 
     }
 }
 
@@ -223,8 +234,8 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '479253516162-jm5096afseju4755cnmbnd4qpqoppm5o.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '865689342591-d6eofacj6drip7rk26c5u338l1a817bh.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
 
 
 SOCIAL_AUTH_PIPELINE = (

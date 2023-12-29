@@ -17,7 +17,7 @@ function subscribe() {
     formData.append("phone", phone);
     formData.append("company", company_name);
     formData.append("coupon", company_coupon);
-    fetch("http://127.0.0.1:8000/core/save-email/", {
+    fetch("https://tbm.xemiron.com/core/save-email/", {
             method: "POST",
             body: formData,
         })
