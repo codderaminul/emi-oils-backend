@@ -1,3 +1,4 @@
+from urllib.parse import urlparse
 from django.http import JsonResponse
 import re, csv
 from django.contrib import messages
@@ -21,6 +22,8 @@ def save_email(request):
         phone = request.POST.get('phone')        
         company = request.POST.get('company')        
         coupon = request.POST.get('coupon')     
+        domain = request.META.get('HTTP_REFERER', None)
+        domain = urlparse(domain).netloc
 
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
         if x_forwarded_for:
@@ -33,6 +36,7 @@ def save_email(request):
             if Subscriber.objects.filter(email=email,company=company).exists() == False and company:
                 Subscriber.objects.create(email=email,phone=phone,ip=ip,company=company,first_name=first_name,last_name=last_name,subscribed_status=True)
                 return JsonResponse({'response':'ok','email':email,'ip':ip}, status=200)
+            
     return JsonResponse({'response':'Nothing here for Emi Oils'})
 
 class CsvUpload(LoginRequiredMixin,View):

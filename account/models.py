@@ -23,6 +23,7 @@ class GenderType(models.TextChoices):
 class Company(models.Model):
      name = models.CharField(max_length=150,unique=False)
      coupon = models.CharField(max_length=15,unique=True)
+     domain = models.CharField(max_length=200,blank=True,null=True)
      created_at = models.DateTimeField(auto_now_add=True)
      def __str__(self):
           return self.name

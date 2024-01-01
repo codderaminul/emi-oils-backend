@@ -33,10 +33,10 @@
                         <div>
                             <form action="" method="post" class="create-audiencs-category">
                                 {% csrf_token %}
-                                <input type="text" class="d-none" id="create-audiencs-category-input" name="create_category_name" placeholder="Input Category Name" required>
-                                <input type="hidden" id="create_category_subscriber_id_list" name="create_category_subscriber_id_list">
-                                <button type="button" id="audiencs-segment-create-btn-without-input">Create new Segment</button>
-                                <button class="d-none" name="create_category" id="audiencs-segment-create-btn-with-input">➕ Create new Segment</button>
+                                <input type="text" class="" value="{{category_name}}" id="create-audiencs-category-input" name="create_category_name" placeholder="Input Category Name" required>
+                                <input type="hidden" id="create_category_subscriber_id_list" value = "nothing"   name="create_category_subscriber_id_list">
+                                <button type="button" id="audiencs-segment-create-btn-without-input">Update new Segment</button>
+                                <button class="d-none" name="create_category" id="audiencs-segment-create-btn-with-input">➕ Update new Segment</button>
                                 <button type="button" class="d-none" id="audiencs-segment-cancel-btn">Cancel</button>
                             </form>
                         </div>
@@ -62,8 +62,11 @@
                             </thead>
                             <tbody>
                                 {% for subscriber in subscribers %}
+
                                 <tr id="subscriber_{{ subscriber.id }}">
-                                    <th scope="row"><input type="checkbox" onchange="checkbox_load()" name="subscribers" value="{{subscriber.id}}" id="{{subscriber.id}}"></th>
+                                    <th scope="row"><input type="checkbox" onchange="checkbox_load()" name="subscribers" value="{{subscriber.id}}" id="{{subscriber.id}}" 
+                                    {% if subscriber in selected_item %} checked {% endif %} ></th>
+
                                     <td class="firstName-column"><input type="text" class="form-control" name="first_name" value="{{subscriber.first_name}}" disabled></td>
                                     <td class="lastName-column"><input type="text" class="form-control" name="last_name" value="{{subscriber.last_name}}" disabled></td>
                                     <td><input type="text" class="form-control" name="email" value="{{subscriber.email}}" disabled></td>

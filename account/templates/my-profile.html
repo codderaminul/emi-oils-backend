@@ -13,8 +13,10 @@
       <th>Serial</th>
       <th>Company Name</th>
       <th>Coupon</th>
+      <th>Domain</th>
       <th>Change Company Name</th>
       <th>Action</th>
+      <th>Activate</th>
     </tr>
 
   {% for company in companies %}
@@ -22,14 +24,52 @@
     <td>{{forloop.counter}}</td>
     <td>{{company.name}}</td>
     <td>{{company.coupon}}</td>
+    <td>{{company.domain}}</td>
     <form method="post">
       {% csrf_token %}
       <td><input name="company" class="form-control" type="text" required></td>
       <input type="hidden" value="{{company.id}}" name="id">
       <td> <input type="submit" class="btn btn-outline-primary" name="changeCompany" value="Change"></td>
     </form>
+      <td>
+        {% if company.domain %}
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="disableID" value="{{company.id}}">
+          <button type="submit" name="disableCompany" class="btn btn-danger">Disable</button>
+        </form>
+        {% else %}
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#activate{{company.id}}"> Enable</button>
+        {% endif %}
+      </td>
   </tr>
    
+  <div class="modal fade " id="activate{{company.id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="staticBackdropLabel">Enter Domain Name</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <form method="post">
+              {% csrf_token %}
+              <div class="modal-body">
+                  <div class="d-flex align-items-end justify-content-between">
+                      <div class="w-100 mx-2">
+                          <input class="form-control" name="domainName" type="text" placeholder="New Domain Name" required>
+                          <input type="hidden" name="companyID" value="{{company.id}}">
+                      </div>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="submit" name="activeCompany" class="btn btn-primary">Enable Now</button>
+              </div>
+          </form>
+        </div>
+    </div>
+  </div>
+
   {% endfor %}
 </table>
 
@@ -59,6 +99,7 @@
       </div>
   </div>
 </div>
+
 
 </div>
 {% endblock body %}

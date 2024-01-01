@@ -163,7 +163,3 @@ def edit_category(request):
         subscribers.append(subscriber.id)
     return JsonResponse({'category_id':category_id,'category_name':category.name,'subscribers':subscribers},status = 200)
 
-def del_category(request):
-    category_id = request.POST.get('category_id')
-    Category.objects.filter(user=request.user,id=category_id).delete()
-    return JsonResponse({'result':'success'},status = 200)

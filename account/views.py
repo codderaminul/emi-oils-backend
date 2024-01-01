@@ -51,6 +51,7 @@ class Profile(LoginRequiredMixin,View):
             company = request.POST.get('company')
             if Company.objects.filter(name = company).exists() is False:
                 Company.objects.filter(id=id).update(name=company)
+                messages.success(request,'Change successfull')
             else:
                 messages.error(request,'Already Exists')
         if 'addCompany' in request.POST:
@@ -62,6 +63,14 @@ class Profile(LoginRequiredMixin,View):
                 messages.success(request,'Create Successfully')
             else:
                 messages.error(request,'Already Exists')
+        if 'activeCompany' in request.POST:
+            domainName = request.POST.get('domainName')
+            companyID = request.POST.get('companyID')
+            Company.objects.filter(id = int(companyID)).update(domain = domainName)
+        if 'disableCompany' in request.POST:
+            disableCompanyID = request.POST.get('disableID')
+            Company.objects.filter(id = int(disableCompanyID)).update(domain = '')
+
         return redirect('accounts:profile')
 
 class SignupView(View):

@@ -1,0 +1,157 @@
+
+<style>
+    .audience-submenu{
+        background: #fff;
+        border-bottom: 1px solid lightgray;
+    }
+    .audience-subheader ul{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        padding: 15px 0;
+        margin: 0;
+    }
+    .audience-subheader ul li a{
+        color: #00455e;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 20px;
+    }
+    .submenu-active{
+        border-bottom: 2px solid #00455e;
+    }
+
+    .audience-subheader ul li a:hover{
+        border-bottom: 2px solid #00455e;
+    }
+    .all-contacts-page-header h2{
+        font-size: 45px;
+        font-weight: 600;
+    }
+    .all-contacts-page-header h4{
+        font-size: 25px;
+        font-weight: 500;
+    }
+    .all-contacts-page-header p{
+        font-size: 18px;
+        font-weight: 400;
+    }
+    .all-contacts-page-header p span{
+        color: #00455e;
+        font-weight: 600;
+    }
+
+    .filter-audiencs p{
+        margin-bottom: 10px;
+    }
+    .filter-audiencs p input, .filter-audiencs p select{
+        width: 100%;
+        border: 1px solid lightgray;
+        border-radius: 5px;
+        padding: 5px 10px;
+    }
+    .filter-audiencs p input:focus, .filter-audiencs p select:focus{
+        outline: none;
+    }
+    .filter-audiencs .audiencs-filter-btn{
+        background: #10779d;
+        border: none;
+        color: #fff;
+        padding: 5px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .create-audiencs-category input{
+        border: 1px solid lightgray;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+    .create-audiencs-category input:focus{
+        outline: none;
+    }
+    .create-audiencs-category button{
+        border: 1px solid lightgray;
+        padding: 5px 10px;
+        border-radius: 5px;
+    }
+    .scrollable-table-width{
+        width: 2500px;
+        overflow: scroll;
+    }
+    .scrollable-table-height{
+        overflow-y: scroll;
+        height: 500px;
+        margin-bottom: 50px;
+    }
+    .firstName-column, .lastName-column{
+        max-width: 100px;
+    }
+    .age-column{
+        max-width: 100px;
+    }
+    
+    .delete{
+        border: 1px solid red;
+        background: transparent;
+        color: red;
+        padding: 1px 5px;
+    }
+    .edit{
+        border: 1px solid #000;
+        background: transparent;
+        color: #000;
+        margin-left: 5px;
+        padding: 1px 5px;
+    }
+    .update{
+        border: 1px solid green;
+        background: transparent;
+        color: green;
+        margin-left: 5px;
+        padding: 1px 5px;
+        display: none;
+    }
+</style>
+
+<section class="audience-submenu">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="audience-subheader">
+                    <ul>
+                        <li><a href="#" class="category-menu" data-menu="dashbord">Audience Deshboard</a></li>
+                        <li><a href="{% url 'tbm:subscribers' %}" class="category-menu" data-menu="contact">All contacts</a></li>
+                        <li><a href="{% url 'tbm:category_list' %}" class="category-menu" data-menu="category">Category</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Check if an active menu is stored in localStorage
+        var activeMenu = sessionStorage.getItem("activeSubMenu");
+        
+        // If an active menu is found, set it as active; otherwise, default to "Home"
+        if (activeMenu) {
+            $(".category-menu[data-menu='" + activeMenu + "']").addClass("submenu-active");
+        } else {
+            $(".category-menu[data-menu='contact']").addClass("submenu-active");
+        }
+
+        $(".category-menu").click(function () {
+            // Remove the active class from all menu items
+            $(".category-menu").removeClass("submenu-active");
+            
+            // Add the active class to the clicked menu item
+            $(this).addClass("submenu-active");
+
+            // Store the active menu in localStorage
+            sessionStorage.setItem("activeSubMenu", $(this).data("menu"));
+        });
+    });
+</script>
