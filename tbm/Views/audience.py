@@ -8,9 +8,6 @@ from django import forms
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-globalSubscribersID = []
-select_all = 'false'
-subscriber_filter = ''
 def get_category(request,category_id):
     if category_id == 'select_all':
         subscribers = Subscriber.objects.filter(company__customuser=request.user)
@@ -97,7 +94,9 @@ class SubscriberFilter(django_filters.FilterSet):
             
 @login_required(login_url='/')  # Specify the login URL        
 def audience(request):
-    global globalSubscribersID,select_all,subscriber_filter
+    globalSubscribersID = []
+    select_all = 'false'
+    subscriber_filter = ''
     if request.method == 'POST':
         if request.POST.get('first_name'):
             id = request.POST.get('subscribe_id')

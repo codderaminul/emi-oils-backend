@@ -11,9 +11,6 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib import messages
 
-globalSubscribersID = []
-select_all = 'false'
-subscriber_filter = ''
 class AllCategory(LoginRequiredMixin,View):
     template_name = 'category_list.html'
 
@@ -78,7 +75,9 @@ class SubscriberFilter(django_filters.FilterSet):
 
 
 def editCategory(request,category_id):
-    global globalSubscribersID,select_all,subscriber_filter
+    globalSubscribersID = []
+    select_all = 'false'
+    subscriber_filter = ''
 
     if request.method == 'POST':
         if request.POST.get('subscriber_select_status'):

@@ -18,7 +18,7 @@
             <tr>
                 <td>{{forloop.counter}}</td>
                 <td>{{category.name}}</td>
-                <td>{{category.subscriber.all|length}}</td>
+                <td>{{category.subscriber.count}}</td>
                 <td>
                     <a class="btn btn-primary" href="{% url 'tbm:category_edit' category.id %}">Edit</a>
                     <a class="btn btn-primary" onclick="delete_category({{category.id}})" href="">Delete</a>
