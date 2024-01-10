@@ -78,6 +78,25 @@ def editCategory(request,category_id):
     globalSubscribersID = []
     select_all = 'false'
     subscriber_filter = ''
+    category = Category.objects.get(id = category_id)   
+    queryset = Subscriber.objects.filter(company__customuser = request.user)
+    if globalSubscribersID == []:
+        selected_category_items = category.subscriber.all() 
+        for item in selected_category_items:
+            globalSubscribersID.append(item.id)
+    subscriber_filter = SubscriberFilter(request.GET, queryset=queryset,user = request.user)
+    paginator = Paginator(subscriber_filter.qs, 10) 
+    page = request.GET.get('page')
+
+    try:
+        subscribers = paginator.page(page)
+    except PageNotAnInteger:
+        subscribers = paginator.page(1)
+    except EmptyPage:
+        subscribers = paginator.page(paginator.num_pages)
+
+    if len(globalSubscribersID) == len(subscriber_filter.qs) and len(globalSubscribersID) > 0:
+        select_all = 'true'
 
     if request.method == 'POST':
         if request.POST.get('subscriber_select_status'):
@@ -109,7 +128,9 @@ def editCategory(request,category_id):
                 for id in unselected:
                     if id in globalSubscribersID:
                         globalSubscribersID.remove(id)
-            
+            subscribers = Subscriber.objects.filter(id__in = globalSubscribersID)
+            category.subscriber.clear()
+            category.subscriber.add(*subscribers)   
 
         if request.POST.get('update_category_name'):
             category_name = request.POST.get('update_category_name')
@@ -118,32 +139,11 @@ def editCategory(request,category_id):
             category.save()
             messages.success(request,"Update successfull")
 
-            subscribers = Subscriber.objects.filter(id__in = globalSubscribersID)
-            category.subscriber.clear()
-            category.subscriber.add(*subscribers)
             globalSubscribersID = []
             select_all = 'false'
             # subscriber_filter = ''
         return redirect('tbm:category_list')
 
-    category = Category.objects.get(id = category_id)   
-    queryset = Subscriber.objects.filter(company__customuser = request.user)
-    if globalSubscribersID == []:
-        selected_category_items = category.subscriber.all() 
-        for item in selected_category_items:
-            globalSubscribersID.append(item.id)
-    subscriber_filter = SubscriberFilter(request.GET, queryset=queryset,user = request.user)
-    paginator = Paginator(subscriber_filter.qs, 10) 
-    page = request.GET.get('page')
-
-    try:
-        subscribers = paginator.page(page)
-    except PageNotAnInteger:
-        subscribers = paginator.page(1)
-    except EmptyPage:
-        subscribers = paginator.page(paginator.num_pages)
-
-    if len(globalSubscribersID) == len(subscriber_filter.qs) and len(globalSubscribersID) > 0:
-        select_all = 'true'
+    
     return render(request, 'category_edit.html',{'selected_item':globalSubscribersID,'subscribers':subscribers,'filter':subscriber_filter,'category_name':category.name,'category_id':category_id,'select_all':select_all})
     

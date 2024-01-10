@@ -97,6 +97,25 @@ def audience(request):
     globalSubscribersID = []
     select_all = 'false'
     subscriber_filter = ''
+    queryset = Subscriber.objects.filter(company__customuser = request.user)
+    subscriber_filter = SubscriberFilter(request.GET, queryset=queryset,user=request.user)
+
+    paginator = Paginator(subscriber_filter.qs, 10)  # Show 10 subscribers per page
+    page = request.GET.get('page')
+
+    try:
+        subscribers = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        subscribers = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g., 9999), deliver last page of results.
+        subscribers = paginator.page(paginator.num_pages)
+    categories = Category.objects.filter(user = request.user)
+
+    if len(globalSubscribersID) == len(subscriber_filter.qs) and len(globalSubscribersID) > 0:
+        select_all = 'true'
+
     if request.method == 'POST':
         if request.POST.get('first_name'):
             id = request.POST.get('subscribe_id')
@@ -156,47 +175,21 @@ def audience(request):
                 for id in unselected:
                     if id in globalSubscribersID:
                         globalSubscribersID.remove(id)
-            return JsonResponse({'response':'ok'},status=200)
-        
-        if 'create_category' in request.POST:
-            try:
-                c_name = request.POST.get('create_category_name', False)
-                if Category.objects.filter(user=request.user,name=c_name).exists():
-                    messages.error(request,"Already Exists This Name")
-                    return redirect('tbm:subscribers') 
-                # Get selected subscriber IDs from the hidden input
 
-                selected_subscribers = Subscriber.objects.filter(id__in=globalSubscribersID)
-                new_cat = Category.objects.create(user=request.user, name=c_name)
-                messages.success(request,'Create category successful')
-                # Retrieve Subscriber instances based on the selected IDs
-                # Add all selected subscribers to the new category
-                new_cat.subscriber.add(*selected_subscribers)
-                globalSubscribersID = []
-                select_all = 'false'
-                # subscriber_filter = ''
-                return redirect('tbm:subscribers')
-            except:
-                messages.error(request,'Please select first')
-                return redirect('tbm:category_list')
+            c_name = request.POST.get('category_name', False)
+            if len(globalSubscribersID) == 0: 
+                return JsonResponse({'response':'No subscriber selected'},status=200)
             
-    queryset = Subscriber.objects.filter(company__customuser = request.user)
-    subscriber_filter = SubscriberFilter(request.GET, queryset=queryset,user=request.user)
+            if Category.objects.filter(user=request.user,name=c_name).exists():
+                return JsonResponse({'response':'Category with this name already exists'},status=200)
+            # Get selected subscriber IDs from the hidden input
+            selected_subscribers = Subscriber.objects.filter(id__in=globalSubscribersID)
+            new_cat = Category.objects.create(user=request.user, name=c_name)
+            messages.success(request,'Create category successful')
+            new_cat.subscriber.add(*selected_subscribers)
 
-    paginator = Paginator(subscriber_filter.qs, 10)  # Show 10 subscribers per page
-    page = request.GET.get('page')
+            return JsonResponse({'response':'ok'},status=200)
 
-    try:
-        subscribers = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        subscribers = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g., 9999), deliver last page of results.
-        subscribers = paginator.page(paginator.num_pages)
-    categories = Category.objects.filter(user = request.user)
-
-    if len(globalSubscribersID) == len(subscriber_filter.qs) and len(globalSubscribersID) > 0:
-        select_all = 'true'
+            
     context = {'filter': subscriber_filter,'subscribers': subscribers,'selected_id':globalSubscribersID,'select_all':select_all}
     return render(request, 'audience.html',context)

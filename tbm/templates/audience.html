@@ -35,11 +35,11 @@
                         </div>
                         
                         <div>
-                            <form action="" method="post" class="create-audiencs-category">
+                            <form id="create_new_category_form" class="create-audiencs-category">
                                 {% csrf_token %}
                                 <input type="text" class="d-none" id="create-audiencs-category-input" name="create_category_name" placeholder="Input Category Name" required>
                                 <button type="button" id="audiencs-segment-create-btn-without-input">Create new Segment</button>
-                                <button class="d-none" name="create_category" id="audiencs-segment-create-btn-with-input">➕ Create new Segment</button>
+                                <button type="submit" class="d-none" name="create_category" id="audiencs-segment-create-btn-with-input">➕ Create new Segment</button>
                                 <button type="button" class="d-none" id="audiencs-segment-cancel-btn">Cancel</button>
                             </form>
                         </div>
@@ -122,11 +122,13 @@
 </section>
 
 <script>
+    var selecta_all_status = 'empty';
+    var checkboxes = document.getElementsByName('subscribers');
+    var selectAllCheckbox = document.getElementById('all');
+    var selectedIds = [];
+    var UnselectedIds = [];
+
     function checkbox_load(all_status = 'empty') {
-        var checkboxes = document.getElementsByName('subscribers');
-        var selectAllCheckbox = document.getElementById('all');
-        var selectedIds = [];
-        var UnselectedIds = [];
 
         for (var i = 0; i < checkboxes.length; i++) {
             if (checkboxes[i].checked) {
@@ -136,20 +138,32 @@
             }
         }
 
-        var selecta_all_status = 'empty';
         if (selectAllCheckbox.checked){
-            var selecta_all_status = selectAllCheckbox.checked;
+            selecta_all_status = selectAllCheckbox.checked;
         }
 
         if(all_status == 'true'){
-            var selecta_all_status = 'notempty';
+            selecta_all_status = 'notempty';
         }
 
+        
+    }
+
+
+
+    document.getElementById('create_new_category_form').addEventListener('submit',function(event){   
+        event.preventDefault();
         var CSRFToken = document.querySelector('input[name=csrfmiddlewaretoken]').value;
         var formdata = new FormData(); 
+        var categoryName = document.getElementById('create-audiencs-category-input').value;
+        if(categoryName == ''){
+            alert('Name can not be empty');
+            return;
+        } 
         formdata.append("selected_id",selectedIds.join(','))
         formdata.append("unselected_id",UnselectedIds.join(','))
         formdata.append("select_all",selecta_all_status)
+        formdata.append("category_name",categoryName)
         formdata.append("subscriber_select_status",'update selected subscriber')
         formdata.append("csrfmiddlewaretoken",CSRFToken)
         fetch("{% url 'tbm:subscribers' %}" , {
@@ -160,7 +174,15 @@
         .then((result) => { 
             return result.json();
          })
-    }
+        .then((data) => { 
+            console.log(data.response);
+            if(data.response == 'ok'){
+                window.location.href='/category-list/';
+            }else{
+                alert(data.response);
+            }
+         })
+    });
 
     function selectAllDispatch() {
         var checkboxes = document.getElementsByName('subscribers');
