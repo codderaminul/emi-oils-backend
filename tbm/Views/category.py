@@ -13,7 +13,6 @@ from django.contrib import messages
 
 globalSubscribersID = []
 select_all = 'false'
-subscriber_all = ''
 subscriber_filter = ''
 class AllCategory(LoginRequiredMixin,View):
     template_name = 'category_list.html'
@@ -79,7 +78,7 @@ class SubscriberFilter(django_filters.FilterSet):
 
 
 def editCategory(request,category_id):
-    global globalSubscribersID,select_all,subscriber_all,subscriber_filter
+    global globalSubscribersID,select_all,subscriber_filter
 
     if request.method == 'POST':
         if request.POST.get('subscriber_select_status'):
@@ -125,6 +124,7 @@ def editCategory(request,category_id):
             category.subscriber.add(*subscribers)
             globalSubscribersID = []
             select_all = 'false'
+            # subscriber_filter = ''
         return redirect('tbm:category_list')
 
     category = Category.objects.get(id = category_id)   
@@ -144,7 +144,7 @@ def editCategory(request,category_id):
     except EmptyPage:
         subscribers = paginator.page(paginator.num_pages)
 
-    if len(globalSubscribersID) == len(subscriber_all):
+    if len(globalSubscribersID) == len(subscriber_filter.qs) and len(globalSubscribersID) > 0:
         select_all = 'true'
     return render(request, 'category_edit.html',{'selected_item':globalSubscribersID,'subscribers':subscribers,'filter':subscriber_filter,'category_name':category.name,'category_id':category_id,'select_all':select_all})
     

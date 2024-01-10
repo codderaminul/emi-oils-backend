@@ -10,7 +10,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 globalSubscribersID = []
 select_all = 'false'
-subscriber_all = ''
 subscriber_filter = ''
 def get_category(request,category_id):
     if category_id == 'select_all':
@@ -98,7 +97,7 @@ class SubscriberFilter(django_filters.FilterSet):
             
 @login_required(login_url='/')  # Specify the login URL        
 def audience(request):
-    global globalSubscribersID,select_all,subscriber_all,subscriber_filter
+    global globalSubscribersID,select_all,subscriber_filter
     if request.method == 'POST':
         if request.POST.get('first_name'):
             id = request.POST.get('subscribe_id')
@@ -137,7 +136,6 @@ def audience(request):
             if select_all == 'true':
                 globalSubscribersID = []
                 for subscriber in subscriber_filter.qs:
-                    print(subscriber.id)
                     globalSubscribersID.append(subscriber.id)
                     
             if select_all == 'empty' and selected_id == '':
@@ -175,8 +173,9 @@ def audience(request):
                 # Retrieve Subscriber instances based on the selected IDs
                 # Add all selected subscribers to the new category
                 new_cat.subscriber.add(*selected_subscribers)
-                globalSubscribersID=[]
+                globalSubscribersID = []
                 select_all = 'false'
+                # subscriber_filter = ''
                 return redirect('tbm:subscribers')
             except:
                 messages.error(request,'Please select first')
@@ -198,7 +197,7 @@ def audience(request):
         subscribers = paginator.page(paginator.num_pages)
     categories = Category.objects.filter(user = request.user)
 
-    if len(globalSubscribersID) == len(subscriber_all) and len(globalSubscribersID) > 0:
+    if len(globalSubscribersID) == len(subscriber_filter.qs) and len(globalSubscribersID) > 0:
         select_all = 'true'
     context = {'filter': subscriber_filter,'subscribers': subscribers,'selected_id':globalSubscribersID,'select_all':select_all}
     return render(request, 'audience.html',context)
