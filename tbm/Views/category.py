@@ -11,6 +11,10 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib import messages
 
+globalSubscribersID = []
+select_all = 'false'
+subscriber_all = ''
+subscriber_filter = ''
 class AllCategory(LoginRequiredMixin,View):
     template_name = 'category_list.html'
 
@@ -73,53 +77,74 @@ class SubscriberFilter(django_filters.FilterSet):
             self.user = user
             self.filters['company__name'].queryset = Company.objects.filter(customuser=user)
 
-class EditCategory(LoginRequiredMixin,View):
-    template_name = 'category_edit.html'
 
-    @method_decorator(verified_email)
-    def get(self,request,category_id):
-        category = Category.objects.get(id = category_id)   
-        selected_item = category.subscriber.all()   
-        queryset = Subscriber.objects.filter(company__customuser = request.user)
+def editCategory(request,category_id):
+    global globalSubscribersID,select_all,subscriber_all,subscriber_filter
 
-        subscriber_filter = SubscriberFilter(request.GET, queryset=queryset,user = request.user)
-        # Add pagination
-        paginator = Paginator(subscriber_filter.qs, 10)  # Show 10 subscribers per page
-        page = request.GET.get('page')
+    if request.method == 'POST':
+        if request.POST.get('subscriber_select_status'):
+            selected_id = request.POST.get('selected_id')
+            unselected_id = request.POST.get('unselected_id')
+            select_all = request.POST.get('select_all')
 
-        try:
-            subscribers = paginator.page(page)
-        except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
-            subscribers = paginator.page(1)
-        except EmptyPage:
-            # If page is out of range (e.g., 9999), deliver last page of results.
-            subscribers = paginator.page(paginator.num_pages)
+            if select_all == 'true':
+                globalSubscribersID = []
+                for subscriber in subscriber_filter.qs:
+                    globalSubscribersID.append(subscriber.id)
+                    
+            if select_all == 'empty' and selected_id == '':
+                select_all = 'false'
+                globalSubscribersID = []
 
-        return render(request, self.template_name, {'selected_item':selected_item,'subscribers':subscribers,'filter':subscriber_filter,'category_name':category.name})
-    
-    @method_decorator(verified_email)
-    def post(self,request,category_id):
-        
-            category_name = request.POST.get('create_category_name')
+            if selected_id != '':
+                SubscriberID = selected_id.split(',')
+                for id in SubscriberID:
+                    globalSubscribersID.append(int(id.strip()))
+            globalSubscribersID = list(set(globalSubscribersID))
+
+            if unselected_id != '':
+                unselected = []
+                UnselectedID = unselected_id.split(',')
+                for id in UnselectedID:
+                    unselected.append(int(id.strip()))
+                unselected = list(set(unselected))
+                for id in unselected:
+                    if id in globalSubscribersID:
+                        globalSubscribersID.remove(id)
+            
+
+        if request.POST.get('update_category_name'):
+            category_name = request.POST.get('update_category_name')
             category = Category.objects.get(id = category_id)  
             category.name = category_name
             category.save()
             messages.success(request,"Update successfull")
 
-            
+            subscribers = Subscriber.objects.filter(id__in = globalSubscribersID)
+            category.subscriber.clear()
+            category.subscriber.add(*subscribers)
+            globalSubscribersID = []
+            select_all = 'false'
+        return redirect('tbm:category_list')
 
-            selected_subscriber_id = request.POST.get('create_category_subscriber_id_list', '')
-            if selected_subscriber_id != 'nothing':
-                selected_subscriber_id = selected_subscriber_id.split(',')
-                selected_subscribers = Subscriber.objects.filter(id__in=selected_subscriber_id)
-                
-                subscribers = Subscriber.objects.filter(category__id = category_id)
-                for subscriber in subscribers:
-                    if subscriber not in selected_subscribers:
-                        category.subscriber.remove(subscriber)
+    category = Category.objects.get(id = category_id)   
+    queryset = Subscriber.objects.filter(company__customuser = request.user)
+    if globalSubscribersID == []:
+        selected_category_items = category.subscriber.all() 
+        for item in selected_category_items:
+            globalSubscribersID.append(item.id)
+    subscriber_filter = SubscriberFilter(request.GET, queryset=queryset,user = request.user)
+    paginator = Paginator(subscriber_filter.qs, 10) 
+    page = request.GET.get('page')
 
-                category.subscriber.add(*selected_subscribers)
-        
-            return redirect('tbm:category_list')
+    try:
+        subscribers = paginator.page(page)
+    except PageNotAnInteger:
+        subscribers = paginator.page(1)
+    except EmptyPage:
+        subscribers = paginator.page(paginator.num_pages)
+
+    if len(globalSubscribersID) == len(subscriber_all):
+        select_all = 'true'
+    return render(request, 'category_edit.html',{'selected_item':globalSubscribersID,'subscribers':subscribers,'filter':subscriber_filter,'category_name':category.name,'category_id':category_id,'select_all':select_all})
     

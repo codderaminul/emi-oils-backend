@@ -111,6 +111,11 @@
 
             // Store the active menu in localStorage
             sessionStorage.setItem("activeMenu", $(this).data("menu"));
+
+            if ( $(this).data("menu" )=== 'audience'){
+                sessionStorage.clear();
+                sessionStorage.setItem("activeMenu", 'audience');
+            }
         });
     });
 </script>

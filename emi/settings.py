@@ -141,23 +141,23 @@ AUTH_USER_MODEL = 'account.CustomUser'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'tbm',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': 'localhost',
-        'PORT': '5432', 
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'tbm',
+#         'USER': 'root',
+#         'PASSWORD': 'root',
+#         'HOST': 'localhost',
+#         'PORT': '5432', 
+#     }
+# }
 
 
 # Password validation
@@ -191,27 +191,20 @@ USE_I18N = True
 USE_TZ = True
 
 # # For Celery
-# CELERY_TIMEZONE = "Asia/Dhaka"
-# CELERY_BROKER_URL = 'redis://localhost:6379/0'
-# CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
-# CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_BROKER_URL = 'redis://localhost:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Dhaka'
 CELERY_RESULT_BACKEND = 'django-db'
-#CELERY BEAT
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
 # Static files (CSS, JavaScript, Images)
 
 STATIC_URL = 'static/'
-
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR,"static")
 ]
-
 STATIC_ROOT = os.path.join(BASE_DIR,"staticfiles/")
 
 # Base url to serve media files
@@ -231,7 +224,6 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_PASSWORD = "cjvzailspkckakud"
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
 
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '865689342591-d6eofacj6drip7rk26c5u338l1a817bh.apps.googleusercontent.com'

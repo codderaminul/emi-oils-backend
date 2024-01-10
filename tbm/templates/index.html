@@ -20,8 +20,6 @@
                                         <li class="d-flex align-items-center">
                                             <input type="checkbox" name="categories" id="{{category.id}}">
                                             <label class="me-4" for="{{category.id}}">{{category.name}}<span> ({{category.subscriber.all|length}})</span> </label>
-                                            <a class="btn ms-5" onclick="edit_category({{category.id}})" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Edit</a>
-                                            <a class="btn" onclick="delete_category({{category.id}})" href="">Delete</a>
                                         </li>
                                         {% endfor %}
                                     </ul>
@@ -356,7 +354,7 @@
         var formdata = new FormData(); 
         formdata.append("category_id",category_id)
         formdata.append("csrfmiddlewaretoken",CSRFToken)
-        fetch("{% url 'tbm:edit_category' %}" , {
+        fetch("{% url 'tbm:category_edit' 75 %}" , {
             method: "POST",
             headers: new Headers(),
             body: formdata,

@@ -8,6 +8,10 @@ from django import forms
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+globalSubscribersID = []
+select_all = 'false'
+subscriber_all = ''
+subscriber_filter = ''
 def get_category(request,category_id):
     if category_id == 'select_all':
         subscribers = Subscriber.objects.filter(company__customuser=request.user)
@@ -94,6 +98,7 @@ class SubscriberFilter(django_filters.FilterSet):
             
 @login_required(login_url='/')  # Specify the login URL        
 def audience(request):
+    global globalSubscribersID,select_all,subscriber_all,subscriber_filter
     if request.method == 'POST':
         if request.POST.get('first_name'):
             id = request.POST.get('subscribe_id')
@@ -123,7 +128,39 @@ def audience(request):
             delete_id = request.POST.get('delete_subscribe_id')
             Subscriber.objects.filter(id=delete_id).delete()
             return JsonResponse({'status': 'ok'})
-    
+                
+        if request.POST.get('subscriber_select_status'):
+            selected_id = request.POST.get('selected_id')
+            unselected_id = request.POST.get('unselected_id')
+            select_all = request.POST.get('select_all')
+
+            if select_all == 'true':
+                globalSubscribersID = []
+                for subscriber in subscriber_filter.qs:
+                    print(subscriber.id)
+                    globalSubscribersID.append(subscriber.id)
+                    
+            if select_all == 'empty' and selected_id == '':
+                select_all = 'false'
+                globalSubscribersID = []
+
+            if selected_id != '':
+                SubscriberID = selected_id.split(',')
+                for id in SubscriberID:
+                    globalSubscribersID.append(int(id.strip()))
+            globalSubscribersID = list(set(globalSubscribersID))
+
+            if unselected_id != '':
+                unselected = []
+                UnselectedID = unselected_id.split(',')
+                for id in UnselectedID:
+                    unselected.append(int(id.strip()))
+                unselected = list(set(unselected))
+                for id in unselected:
+                    if id in globalSubscribersID:
+                        globalSubscribersID.remove(id)
+            return JsonResponse({'response':'ok'},status=200)
+        
         if 'create_category' in request.POST:
             try:
                 c_name = request.POST.get('create_category_name', False)
@@ -131,19 +168,23 @@ def audience(request):
                     messages.error(request,"Already Exists This Name")
                     return redirect('tbm:subscribers') 
                 # Get selected subscriber IDs from the hidden input
-                selected_subscriber_ids = request.POST.get('create_category_subscriber_id_list', '').split(',')
-                selected_subscribers = Subscriber.objects.filter(id__in=selected_subscriber_ids)
+
+                selected_subscribers = Subscriber.objects.filter(id__in=globalSubscribersID)
                 new_cat = Category.objects.create(user=request.user, name=c_name)
                 messages.success(request,'Create category successful')
                 # Retrieve Subscriber instances based on the selected IDs
                 # Add all selected subscribers to the new category
                 new_cat.subscriber.add(*selected_subscribers)
+                globalSubscribersID=[]
+                select_all = 'false'
+                return redirect('tbm:subscribers')
             except:
                 messages.error(request,'Please select first')
-
+                return redirect('tbm:category_list')
+            
     queryset = Subscriber.objects.filter(company__customuser = request.user)
     subscriber_filter = SubscriberFilter(request.GET, queryset=queryset,user=request.user)
-    # Add pagination
+
     paginator = Paginator(subscriber_filter.qs, 10)  # Show 10 subscribers per page
     page = request.GET.get('page')
 
@@ -156,5 +197,8 @@ def audience(request):
         # If page is out of range (e.g., 9999), deliver last page of results.
         subscribers = paginator.page(paginator.num_pages)
     categories = Category.objects.filter(user = request.user)
-    
-    return render(request, 'audience.html', {'filter': subscriber_filter,'subscribers': subscribers})
+
+    if len(globalSubscribersID) == len(subscriber_all) and len(globalSubscribersID) > 0:
+        select_all = 'true'
+    context = {'filter': subscriber_filter,'subscribers': subscribers,'selected_id':globalSubscribersID,'select_all':select_all}
+    return render(request, 'audience.html',context)

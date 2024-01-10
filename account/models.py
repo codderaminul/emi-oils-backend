@@ -15,10 +15,10 @@ class SubscriberType(models.TextChoices):
     OTHER = "OTHER", "Other"
 
 class GenderType(models.TextChoices):
-        MALE = "male", "Male"
-        FEMALE = "female", "Female"
-        UNSPECIFIED = "unspecified", "Unspecified"
-        OTHER = "other", "OTHER"
+        MALE = "Male", "Male"
+        FEMALE = "Female", "Female"
+        UNSPECIFIED = "Unspecified", "Unspecified"
+        OTHER = "OTHER", "OTHER"
 
 class Company(models.Model):
      name = models.CharField(max_length=150,unique=False)
