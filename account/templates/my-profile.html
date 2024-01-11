@@ -24,7 +24,11 @@
     <td>{{forloop.counter}}</td>
     <td>{{company.name}}</td>
     <td>{{company.coupon}}</td>
-    <td>{{company.domain}}</td>
+    <td>{{company.domain | slice:50}} 
+    {% if company.domain|length > 50 %}
+    . . . .
+    {% endif %}
+     </td>
     <form method="post">
       {% csrf_token %}
       <td><input name="company" class="form-control" type="text" required></td>
@@ -36,11 +40,11 @@
         <form method="post">
           {% csrf_token %}
           <input type="hidden" name="disableID" value="{{company.id}}">
-          <button type="submit" name="disableCompany" class="btn btn-danger">Disable</button>
+          <button type="submit" name="disableCompany" class="btn btn-danger">Clear</button>
         </form>
-        {% else %}
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#activate{{company.id}}"> Enable</button>
         {% endif %}
+
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#activate{{company.id}}"> Add</button>
       </td>
   </tr>
    
@@ -52,20 +56,22 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                     aria-label="Close"></button>
             </div>
-            <form method="post">
+            <form id="" method="post">
               {% csrf_token %}
               <div class="modal-body">
                   <div class="d-flex align-items-end justify-content-between">
                       <div class="w-100 mx-2">
-                          <input class="form-control" name="domainName" type="text" placeholder="New Domain Name" required>
-                          <input type="hidden" name="companyID" value="{{company.id}}">
+                        <p id="domain_list">{{company.domain}}</p>
+                          <input class="form-control" id="domainName" name="domainName" type="text" placeholder="New Domain Name" required>
+                          <input type="hidden" id="companyID" name="companyID" value="{{company.id}}">
                       </div>
                   </div>
               </div>
               <div class="modal-footer">
-                  <button type="submit" name="activeCompany" class="btn btn-primary">Enable Now</button>
+                  <button type="submit" name="activeCompany" class="btn btn-primary">Add Now</button>
               </div>
           </form>
+
         </div>
     </div>
   </div>
@@ -103,3 +109,5 @@
 
 </div>
 {% endblock body %}
+
+

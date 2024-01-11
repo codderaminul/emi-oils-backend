@@ -22,8 +22,7 @@ def save_email(request):
         phone = request.POST.get('phone')        
         company = request.POST.get('company')        
         coupon = request.POST.get('coupon')     
-        domain = request.META.get('HTTP_REFERER', None)
-        domain = urlparse(domain).netloc
+        request_domain_name = request.POST.get('domain_name')     
 
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
         if x_forwarded_for:
@@ -33,6 +32,10 @@ def save_email(request):
 
         if(re.fullmatch(regex, email)):
             company = get_object_or_404(Company, name=company,coupon=coupon)
+            company_domain = (company.domain).split(' , ')
+            if request_domain_name not in company_domain:
+                return JsonResponse({'response':'forbidden'}, status=200)
+                
             if Subscriber.objects.filter(email=email,company=company).exists() == False and company:
                 Subscriber.objects.create(email=email,phone=phone,ip=ip,company=company,first_name=first_name,last_name=last_name,subscribed_status=True)
                 return JsonResponse({'response':'ok','email':email,'ip':ip}, status=200)

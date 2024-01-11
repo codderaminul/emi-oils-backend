@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render
 import string,random
 from account.decorators import if_email_verified, verified_email_required
@@ -63,10 +64,17 @@ class Profile(LoginRequiredMixin,View):
                 messages.success(request,'Create Successfully')
             else:
                 messages.error(request,'Already Exists')
-        if 'activeCompany' in request.POST:
+        if  'activeCompany' in request.POST:
             domainName = request.POST.get('domainName')
             companyID = request.POST.get('companyID')
-            Company.objects.filter(id = int(companyID)).update(domain = domainName)
+            company = Company.objects.get(id = int(companyID))
+            if company.domain == None or company.domain == '':
+                company.domain = domainName
+            else: 
+                domainName = company.domain+' , '+domainName
+                company.domain = domainName
+            company.save()
+
         if 'disableCompany' in request.POST:
             disableCompanyID = request.POST.get('disableID')
             Company.objects.filter(id = int(disableCompanyID)).update(domain = '')

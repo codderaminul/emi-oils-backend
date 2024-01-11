@@ -6,6 +6,9 @@ function subscribe() {
     var phone = document.getElementById("phone").value;
     var company_name = companyData.company_name;
     var company_coupon = companyData.company_coupon;
+    var domain_name = window.location.href;
+
+    domain_name = domain_name.split('/',3).join('/');
     document.getElementById("first_name").value = "";
     document.getElementById("last_name").value = "";
     document.getElementById("email").value = "";
@@ -17,6 +20,7 @@ function subscribe() {
     formData.append("phone", phone);
     formData.append("company", company_name);
     formData.append("coupon", company_coupon);
+    formData.append("domain_name", domain_name);
     fetch("https://tbm.xemiron.com/core/save-email/", {
             method: "POST",
             body: formData,
@@ -33,10 +37,18 @@ function subscribe() {
             if (data.email != undefined) {
                 susbscribed2.innerText = "";
                 susbscribed1.innerText = "Success! Thanks for subscribe.";
-            } else {
+            } else if(data.response == 'forbidden'){
+                susbscribed1.innerText = "";
+                susbscribed2.innerText = "Forbidden!";
+            }
+            else {
                 susbscribed1.innerText = "";
                 susbscribed2.innerText = "Fail!";
             }
+            setTimeout(function() {
+                susbscribed1.innerText = "";
+                susbscribed2.innerText = "";
+            }, 3000);
         })
         .catch((error) => {
             console.error('Error:', error);
