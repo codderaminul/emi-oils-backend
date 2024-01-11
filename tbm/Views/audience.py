@@ -187,7 +187,7 @@ def audience(request):
             new_cat = Category.objects.create(user=request.user, name=c_name)
             messages.success(request,'Create category successful')
             new_cat.subscriber.add(*selected_subscribers)
-
+            
             return JsonResponse({'response':'ok'},status=200)
 
             
